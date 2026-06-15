@@ -30,8 +30,6 @@ export function Rsvp() {
       fullName: data.get('fullName'),
       email: data.get('email'),
       attendance,
-      guests: data.get('guests'),
-      meal: data.get('meal'),
       note: data.get('note'),
     }
 
@@ -59,6 +57,10 @@ export function Rsvp() {
         <SectionHeading subtitle={`Kindly Reply By ${wedding.rsvpBy}`} title="RSVP" />
         <Divider />
 
+        <p className="mx-auto mt-4 max-w-lg text-center font-sans text-lg italic leading-relaxed text-muted-foreground">
+          We hope you will join us on our special day. Please let us know if you can make it.
+        </p>
+
         {status === 'success' ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -81,18 +83,20 @@ export function Rsvp() {
             transition={{ duration: 0.7, ease: 'easeOut' }}
             className="mt-10 flex flex-col gap-6 rounded-2xl border border-gold/20 bg-card/40 p-8 backdrop-blur-sm sm:p-10"
           >
-            <div>
-              <label htmlFor="fullName" className={labelClass}>
-                Full Name
-              </label>
-              <input id="fullName" name="fullName" required placeholder="Your full name" className={fieldClass} />
-            </div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label htmlFor="fullName" className={labelClass}>
+                  Full Name
+                </label>
+                <input id="fullName" name="fullName" required placeholder="Your full name" className={fieldClass} />
+              </div>
 
-            <div>
-              <label htmlFor="email" className={labelClass}>
-                Email
-              </label>
-              <input id="email" name="email" type="email" required placeholder="you@email.com" className={fieldClass} />
+              <div>
+                <label htmlFor="email" className={labelClass}>
+                  Email Address
+                </label>
+                <input id="email" name="email" type="email" required placeholder="you@email.com" className={fieldClass} />
+              </div>
             </div>
 
             <div>
@@ -123,37 +127,9 @@ export function Rsvp() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label htmlFor="guests" className={labelClass}>
-                  Number of Guests
-                </label>
-                <select id="guests" name="guests" defaultValue="1" className={fieldClass}>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n} className="bg-background">
-                      {n} {n === 1 ? 'Guest' : 'Guests'}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="meal" className={labelClass}>
-                  Meal Preference
-                </label>
-                <select id="meal" name="meal" defaultValue="Standard" className={fieldClass}>
-                  {['Standard', 'Vegetarian', 'Vegan', 'Halal', 'No Preference'].map((m) => (
-                    <option key={m} value={m} className="bg-background">
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
             <div>
               <label htmlFor="note" className={labelClass}>
-                A Note for the Couple
+                A Note for the Couple (Optional)
               </label>
               <textarea
                 id="note"
@@ -173,7 +149,7 @@ export function Rsvp() {
               disabled={status === 'loading'}
               className="bg-gradient-gold mt-2 rounded-lg px-8 py-4 font-sans text-lg font-semibold uppercase tracking-[0.25em] text-background transition hover:brightness-110 disabled:opacity-60"
             >
-              {status === 'loading' ? 'Sending...' : 'Send RSVP'}
+              {status === 'loading' ? 'Sending...' : 'Send RSVP ✦'}
             </button>
           </motion.form>
         )}

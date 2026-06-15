@@ -3,6 +3,7 @@ import { CoupleSection } from '@/components/wedding/couple-section'
 import { EventDetails } from '@/components/wedding/event-details'
 import { Gallery } from '@/components/wedding/gallery'
 import { Rsvp } from '@/components/wedding/rsvp'
+import { GiftRegistry } from '@/components/wedding/gift-registry'
 import { Footer } from '@/components/wedding/footer'
 
 export default function Page() {
@@ -13,6 +14,7 @@ export default function Page() {
       <EventDetails />
       <Gallery />
       <Rsvp />
+      <GiftRegistry />
       <Footer />
     </main>
   )

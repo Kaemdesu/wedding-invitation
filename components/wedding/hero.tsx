@@ -4,10 +4,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useRef } from 'react'
 import { wedding } from '@/lib/wedding-config'
+import { ErrorBoundary } from './error-boundary'
 
 const RingScene = dynamic(
   () => import('./ring-scene').then((m) => m.RingScene),
-  { ssr: false },
+  { ssr: false }
 )
 
 export function Hero() {
@@ -17,25 +18,20 @@ export function Hero() {
     offset: ['start start', 'end end'],
   })
 
-  // Phase 1 text
   const t1Opacity = useTransform(scrollYProgress, [0, 0.06, 0.16, 0.22], [0, 1, 1, 0])
   const t1Y = useTransform(scrollYProgress, [0, 0.22], [30, -30])
 
-  // Phase 2 text
   const t2Opacity = useTransform(scrollYProgress, [0.24, 0.3, 0.42, 0.48], [0, 1, 1, 0])
   const t2Y = useTransform(scrollYProgress, [0.24, 0.48], [30, -30])
 
-  // Satin + roses background fades in
   const satinOpacity = useTransform(scrollYProgress, [0.5, 0.78], [0, 1])
   const darkOverlay = useTransform(scrollYProgress, [0.5, 0.85], [0.85, 0.45])
 
-  // Final reveal
   const revealOpacity = useTransform(scrollYProgress, [0.7, 0.8], [0, 1])
   const revealY = useTransform(scrollYProgress, [0.7, 0.92], [40, 0])
   const namesOpacity = useTransform(scrollYProgress, [0.82, 0.92], [0, 1])
   const namesScale = useTransform(scrollYProgress, [0.82, 1], [0.92, 1])
 
-  // Ring fades out at the very end to let names shine
   const ringOpacity = useTransform(scrollYProgress, [0, 0.7, 0.92], [1, 1, 0.15])
   const scrollHint = useTransform(scrollYProgress, [0, 0.08], [1, 0])
 
@@ -58,9 +54,11 @@ export function Hero() {
           />
         </motion.div>
 
-        {/* 3D Ring */}
+        {/* 3D Ring — same on all screen sizes */}
         <motion.div style={{ opacity: ringOpacity }} className="absolute inset-0">
-          <RingScene progress={scrollYProgress} />
+          <ErrorBoundary>
+            <RingScene progress={scrollYProgress} />
+          </ErrorBoundary>
         </motion.div>
 
         {/* Phase 1 */}
@@ -68,7 +66,7 @@ export function Hero() {
           style={{ opacity: t1Opacity, y: t1Y }}
           className="font-heading pointer-events-none absolute px-6 text-center text-4xl font-medium text-cream sm:text-6xl md:text-7xl"
         >
-          A Love Forged in Time
+          For the days that deserve forever,
         </motion.h1>
 
         {/* Phase 2 */}
@@ -76,7 +74,7 @@ export function Hero() {
           style={{ opacity: t2Opacity, y: t2Y }}
           className="font-heading pointer-events-none absolute px-6 text-center text-3xl font-medium text-cream sm:text-5xl md:text-6xl"
         >
-          Two Souls, One Beautiful Journey
+          these become our Preserved Chapters
         </motion.h2>
 
         {/* Final reveal */}
