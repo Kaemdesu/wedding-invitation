@@ -4,38 +4,36 @@ import { motion } from 'framer-motion'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
+import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 function Portrait({
   person,
   align,
-  delay,
 }: {
   person: { name: string; bio: string; photo: string }
   align: 'left' | 'right'
-  delay: number
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: align === 'left' ? -40 : 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.8, ease: 'easeOut', delay }}
-      className="flex flex-col items-center text-center"
+      variants={fadeUp}
+      className={`flex flex-col items-center text-center ${
+        align === 'left' ? 'md:items-start md:text-left' : 'md:items-end md:text-right'
+      }`}
     >
-      <div className="relative">
-        <div className="absolute -inset-3 rounded-full border border-gold/30" />
-        <div className="size-48 overflow-hidden rounded-full border border-gold/50 glow-gold sm:size-56">
-          <img
-            src={person.photo || '/placeholder.svg'}
-            alt={person.name}
-            className="h-full w-full object-cover"
-          />
-        </div>
+      <div className="group relative h-72 w-72 overflow-hidden rounded-2xl border border-gold/20 sm:h-80 sm:w-80 md:h-96 md:w-96">
+        <img
+          src={person.photo}
+          alt={person.name}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 gpu"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent" />
       </div>
-      <h3 className="font-heading mt-8 text-3xl font-medium text-cream sm:text-4xl">
+      <h3 className="mt-6 font-heading text-fluid-2xl font-light italic text-gradient-gold md:mt-8">
         {person.name}
       </h3>
-      <p className="mt-4 max-w-xs text-pretty font-sans text-lg leading-relaxed text-muted-foreground">
+      <p className="mt-4 max-w-md font-sans text-fluid-base leading-relaxed text-cream/85">
         {person.bio}
       </p>
     </motion.div>
@@ -44,32 +42,21 @@ function Portrait({
 
 export function CoupleSection() {
   return (
-    <section className="relative bg-background px-6 py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading subtitle="Our Story" title="The Couple" />
-        <Divider />
+    <section className="relative px-6 py-24 safe-x md:py-32">
+      <SectionHeading subtitle="The Bride & The Groom" title="Two souls, one journey" />
 
-        <div className="mt-12 grid grid-cols-1 items-center gap-14 md:grid-cols-[1fr_auto_1fr] md:gap-8">
-          <Portrait person={wedding.groom} align="left" delay={0} />
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mx-auto grid max-w-6xl gap-16 md:grid-cols-2 md:gap-12 lg:gap-20"
+      >
+        <Portrait person={wedding.groom} align="left" />
+        <Portrait person={wedding.bride} align="right" />
+      </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
-            className="flex flex-col items-center"
-          >
-            <span className="font-heading text-7xl text-gradient-gold sm:text-8xl">
-              &amp;
-            </span>
-            <p className="mt-2 max-w-[10rem] text-center font-sans text-base uppercase tracking-[0.25em] text-gold">
-              Two souls, one journey
-            </p>
-          </motion.div>
-
-          <Portrait person={wedding.bride} align="right" delay={0.1} />
-        </div>
-      </div>
+      <Divider />
     </section>
   )
 }

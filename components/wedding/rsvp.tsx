@@ -6,13 +6,30 @@ import { useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
+import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 type Attendance = 'accept' | 'decline'
 
+const GOOGLE_SHEETS_URL =
+  'https://script.google.com/macros/s/AKfycbxUycJDbXHoP4k0cqBrEjhHCNFUcJ9F8HQiOHVrL6Uj8aFqNZfpYdPZCCeQQwHtq6w/exec'
+
 const fieldClass =
-  'w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-sans text-lg text-cream placeholder:text-muted-foreground/60 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50'
+  'w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-sans text-fluid-base text-cream placeholder:text-muted-foreground/60 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50 touch-target'
+
 const labelClass =
-  'mb-2 block font-sans text-sm font-semibold uppercase tracking-[0.2em] text-gold'
+  'mb-2 block font-mono text-fluid-xs font-semibold uppercase tracking-[0.2em] text-gold'
+
+function sendToGoogleSheets(data: Record<string, string>): Promise<void> {
+  return new Promise((resolve) => {
+    const params = new URLSearchParams(data).toString()
+    const url = `${GOOGLE_SHEETS_URL}?${params}`
+    const img = new Image()
+    img.onload = () => resolve()
+    img.onerror = () => resolve()
+    img.src = url
+    setTimeout(resolve, 3000)
+  })
+}
 
 export function Rsvp() {
   const [attendance, setAttendance] = useState<Attendance>('accept')
@@ -27,133 +44,131 @@ export function Rsvp() {
     const form = e.currentTarget
     const data = new FormData(form)
     const payload = {
-      fullName: data.get('fullName'),
-      email: data.get('email'),
+      fullName: (data.get('fullName') as string) || '',
+      email: (data.get('email') as string) || '',
       attendance,
-      note: data.get('note'),
+      note: (data.get('note') as string) || '',
     }
 
     try {
-      const res = await fetch('/api/rsvp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}))
-        throw new Error(j.error || 'Something went wrong.')
-      }
+      await sendToGoogleSheets(payload)
       setStatus('success')
       form.reset()
-    } catch (err) {
-      setErrorMsg((err as Error).message)
+    } catch {
+      setErrorMsg('Something went wrong. Please try again.')
       setStatus('error')
     }
   }
 
   return (
-    <section className="relative bg-background px-6 py-24 sm:py-32">
-      <div className="mx-auto max-w-2xl">
-        <SectionHeading subtitle={`Kindly Reply By ${wedding.rsvpBy}`} title="RSVP" />
-        <Divider />
+    <section className="relative px-6 py-24 safe-x md:py-32">
+      <SectionHeading subtitle="RSVP" title="Will you join us?" />
 
-        <p className="mx-auto mt-4 max-w-lg text-center font-sans text-lg italic leading-relaxed text-muted-foreground">
-          We hope you will join us on our special day. Please let us know if you can make it.
-        </p>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportDefaults}
+        transition={{ duration: 0.8 }}
+        className="mx-auto mb-10 max-w-xl text-center font-sans text-fluid-base text-cream/80 md:mb-14"
+      >
+        We hope you will join us on our special day. Kindly let us know by{' '}
+        <span className="text-gold">{wedding.rsvpBy}</span>.
+      </motion.p>
 
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mx-auto max-w-xl rounded-2xl border border-gold/20 bg-card/40 p-6 backdrop-blur-sm sm:p-8 md:p-10"
+      >
         {status === 'success' ? (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-10 flex flex-col items-center rounded-2xl border border-gold/30 bg-card/60 p-12 text-center glow-gold"
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="py-8 text-center"
           >
-            <Heart className="size-10 text-gold" />
-            <h3 className="font-heading mt-5 text-3xl text-cream">Thank You</h3>
-            <p className="mt-3 max-w-sm font-sans text-lg leading-relaxed text-muted-foreground">
-              Your RSVP has been received. We cannot wait to celebrate this beautiful
-              day with you.
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 bg-gold/10">
+              <Heart className="h-7 w-7 text-gold" />
+            </div>
+            <h3 className="mt-6 font-heading text-fluid-2xl font-light italic text-gradient-gold">
+              Thank You
+            </h3>
+            <p className="mt-4 font-sans text-fluid-base leading-relaxed text-cream/80">
+              Your RSVP has been received. We cannot wait to celebrate this beautiful day
+              with you.
             </p>
           </motion.div>
         ) : (
-          <motion.form
-            onSubmit={handleSubmit}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="mt-10 flex flex-col gap-6 rounded-2xl border border-gold/20 bg-card/40 p-8 backdrop-blur-sm sm:p-10"
-          >
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <label htmlFor="fullName" className={labelClass}>
-                  Full Name
-                </label>
-                <input id="fullName" name="fullName" required placeholder="Your full name" className={fieldClass} />
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <motion.div variants={fadeUp}>
+              <label htmlFor="fullName" className={labelClass}>
+                Full Name
+              </label>
+              <input id="fullName" name="fullName" type="text" required className={fieldClass} />
+            </motion.div>
 
-              <div>
-                <label htmlFor="email" className={labelClass}>
-                  Email Address
-                </label>
-                <input id="email" name="email" type="email" required placeholder="you@email.com" className={fieldClass} />
-              </div>
-            </div>
+            <motion.div variants={fadeUp}>
+              <label htmlFor="email" className={labelClass}>
+                Email Address
+              </label>
+              <input id="email" name="email" type="email" required className={fieldClass} />
+            </motion.div>
 
-            <div>
+            <motion.div variants={fadeUp}>
               <span className={labelClass}>Will You Attend?</span>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setAttendance('accept')}
-                  className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-lg transition ${
+                  className={`touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-fluid-base transition ${
                     attendance === 'accept'
                       ? 'border-gold bg-gold/15 text-cream glow-gold'
                       : 'border-gold/25 text-muted-foreground hover:border-gold/50'
                   }`}
                 >
-                  <Check className="size-4 text-gold" /> Joyfully Accept
+                  <Check className="h-4 w-4" /> Joyfully Accept
                 </button>
                 <button
                   type="button"
                   onClick={() => setAttendance('decline')}
-                  className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-lg transition ${
+                  className={`touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-fluid-base transition ${
                     attendance === 'decline'
                       ? 'border-gold bg-gold/15 text-cream glow-gold'
                       : 'border-gold/25 text-muted-foreground hover:border-gold/50'
                   }`}
                 >
-                  <X className="size-4 text-gold" /> Regretfully Decline
+                  <X className="h-4 w-4" /> Regretfully Decline
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div variants={fadeUp}>
               <label htmlFor="note" className={labelClass}>
                 A Note for the Couple (Optional)
               </label>
-              <textarea
-                id="note"
-                name="note"
-                rows={4}
-                placeholder="Share your wishes..."
-                className={`${fieldClass} resize-none`}
-              />
-            </div>
+              <textarea id="note" name="note" rows={4} className={`${fieldClass} resize-none`} />
+            </motion.div>
 
             {status === 'error' && (
-              <p className="text-center font-sans text-base text-destructive">{errorMsg}</p>
+              <p className="text-center font-sans text-fluid-sm text-destructive">{errorMsg}</p>
             )}
 
-            <button
+            <motion.button
+              variants={fadeUp}
+              whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={status === 'loading'}
-              className="bg-gradient-gold mt-2 rounded-lg px-8 py-4 font-sans text-lg font-semibold uppercase tracking-[0.25em] text-background transition hover:brightness-110 disabled:opacity-60"
+              className="touch-target w-full rounded-lg bg-gradient-gold px-6 py-4 font-mono text-fluid-sm font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90 disabled:opacity-60"
             >
               {status === 'loading' ? 'Sending...' : 'Send RSVP ✦'}
-            </button>
-          </motion.form>
+            </motion.button>
+          </form>
         )}
-      </div>
+      </motion.div>
+
+      <Divider />
     </section>
   )
 }

@@ -46,6 +46,7 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -58,34 +59,25 @@
 :root {
   color-scheme: dark;
 
-  /* Luxury wedding palette */
   --background: oklch(0.12 0.012 270);
   --foreground: oklch(0.93 0.022 85);
-
   --card: oklch(0.16 0.014 270);
   --card-foreground: oklch(0.93 0.022 85);
   --popover: oklch(0.16 0.014 270);
   --popover-foreground: oklch(0.93 0.022 85);
-
   --primary: oklch(0.74 0.1 85);
   --primary-foreground: oklch(0.12 0.012 270);
-
   --secondary: oklch(0.2 0.014 270);
   --secondary-foreground: oklch(0.93 0.022 85);
-
   --muted: oklch(0.2 0.014 270);
   --muted-foreground: oklch(0.68 0.03 85);
-
   --accent: oklch(0.74 0.1 85);
   --accent-foreground: oklch(0.12 0.012 270);
-
   --destructive: oklch(0.55 0.18 25);
-
   --border: oklch(0.74 0.1 85 / 18%);
   --input: oklch(0.74 0.1 85 / 22%);
   --ring: oklch(0.74 0.1 85 / 55%);
 
-  /* Custom brand tokens */
   --gold: oklch(0.74 0.1 85);
   --gold-soft: oklch(0.82 0.08 88);
   --amber: oklch(0.78 0.13 70);
@@ -96,6 +88,7 @@
   --chart-3: oklch(0.6 0.06 85);
   --chart-4: oklch(0.45 0.04 85);
   --chart-5: oklch(0.3 0.02 270);
+
   --radius: 0.625rem;
 
   --sidebar: oklch(0.16 0.014 270);
@@ -112,11 +105,40 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 👇 Move base color to html so body can be transparent */
+    background-color: oklch(0.08 0.010 270);
+    color: var(--foreground);
+  }
+
+  body {
+    /* 👇 Transparent so fixed batik bg shows through */
+    background-color: transparent;
+    color: var(--foreground);
+    overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold/60 ring-offset-2 ring-offset-background;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -124,6 +146,7 @@
   .font-heading {
     font-family: var(--font-heading);
   }
+
   .text-gradient-gold {
     background: linear-gradient(
       120deg,
@@ -135,6 +158,7 @@
     background-clip: text;
     color: transparent;
   }
+
   .bg-gradient-gold {
     background: linear-gradient(
       120deg,
@@ -143,8 +167,95 @@
       oklch(0.7 0.13 68)
     );
   }
+
   .glow-gold {
-    box-shadow: 0 0 0 1px oklch(0.74 0.1 85 / 25%),
+    box-shadow:
+      0 0 0 1px oklch(0.74 0.1 85 / 25%),
       0 0 40px -8px oklch(0.74 0.1 85 / 35%);
+  }
+
+  /* Fluid typography — scales from mobile to 4K beautifully */
+  .text-fluid-xs {
+    font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  }
+  .text-fluid-sm {
+    font-size: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.125rem, 1rem + 0.625vw, 1.375rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.625rem);
+  }
+  .text-fluid-2xl {
+    font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+  }
+  .text-fluid-3xl {
+    font-size: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+  }
+  .text-fluid-4xl {
+    font-size: clamp(2.25rem, 1.75rem + 2.5vw, 4rem);
+  }
+  .text-fluid-5xl {
+    font-size: clamp(2.75rem, 2rem + 3.75vw, 5.5rem);
+  }
+  .text-fluid-6xl {
+    font-size: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+  }
+  .text-fluid-display {
+    font-size: clamp(3rem, 2rem + 7vw, 9rem);
+  }
+
+  /* GPU acceleration helpers */
+  .gpu {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Safe area utilities */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Touch-friendly minimum sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* ...your existing utilities... */
+
+  /* Optimize scroll performance */
+  .scroll-optimize {
+    contain: layout style paint;
+    content-visibility: auto;
+  }
+
+  /* Smoother momentum scroll on iOS */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
   }
 }

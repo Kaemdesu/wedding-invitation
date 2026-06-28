@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 export function SectionHeading({
   subtitle,
@@ -10,25 +11,25 @@ export function SectionHeading({
   title: string
 }) {
   return (
-    <div className="flex flex-col items-center text-center">
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="show"
+      viewport={viewportDefaults}
+      className="mb-12 text-center md:mb-16"
+    >
       <motion.p
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="font-sans text-sm font-semibold uppercase tracking-[0.4em] text-gold"
+        variants={fadeUp}
+        className="font-mono text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
       >
         {subtitle}
       </motion.p>
       <motion.h2
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-        className="font-heading mt-3 text-balance text-4xl font-medium text-cream sm:text-5xl md:text-6xl"
+        variants={fadeUp}
+        className="mt-4 font-heading text-fluid-4xl font-light italic leading-[1.1] text-gradient-gold md:mt-6"
       >
         {title}
       </motion.h2>
-    </div>
+    </motion.div>
   )
 }

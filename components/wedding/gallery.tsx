@@ -4,75 +4,72 @@ import { motion } from 'framer-motion'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
+import { staggerFast, fadeUp, viewportDefaults } from '@/lib/motion'
 
 const fallbackImages = [
-  '/images/gallery-1.png',
-  '/images/gallery-2.png',
-  '/images/gallery-3.png',
-  '/images/gallery-4.png',
-  '/images/gallery-5.png',
-  '/images/gallery-6.png',
+  '/images/gallery-1.webp',
+  '/images/gallery-2.webp',
+  '/images/gallery-3.webp',
+  '/images/gallery-4.webp',
+  '/images/gallery-5.webp',
+  '/images/gallery-6.webp',
 ]
 
-// Fixed no-gap bento layout.
-// Desktop layout uses 6 columns and 3 rows:
-// - Image 1: large left area
-// - Image 2 & 3: stacked right area
-// - Image 4, 5, 6: bottom row
 const spans = [
-  'lg:col-span-4 lg:row-span-2',
-  'lg:col-span-2 lg:row-span-1',
-  'lg:col-span-2 lg:row-span-1',
-  'lg:col-span-2 lg:row-span-1',
-  'lg:col-span-2 lg:row-span-1',
-  'lg:col-span-2 lg:row-span-1',
+  'col-span-2 row-span-2 md:col-span-4 md:row-span-2',
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
+  'col-span-2 row-span-1 md:col-span-2 md:row-span-1',
 ]
 
 export function Gallery() {
   const galleryImages = [...wedding.gallery]
-
   while (galleryImages.length < 6) {
     galleryImages.push(fallbackImages[galleryImages.length])
   }
-
   const images = galleryImages.slice(0, 6)
 
   return (
-    <section className="relative bg-background px-6 py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading subtitle="Captured Moments" title="Our Gallery" />
-        <Divider />
+    <section className="relative px-6 py-24 safe-x md:py-32">
+      <SectionHeading subtitle="Memories" title="Moments to remember" />
 
-        <div className="mt-12 grid auto-rows-[220px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:auto-rows-[180px]">
-          {images.map((src, i) => (
-            <motion.figure
-              key={`${src}-${i}`}
-              initial={{ opacity: 0, scale: 0.94 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{
-                duration: 0.6,
-                ease: 'easeOut',
-                delay: (i % 3) * 0.08,
+      <motion.div
+        variants={staggerFast}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mx-auto grid max-w-6xl auto-rows-[180px] grid-cols-2 gap-3 sm:auto-rows-[220px] sm:gap-4 md:auto-rows-[260px] md:grid-cols-6"
+      >
+        {images.map((src, i) => (
+          <motion.div
+            key={i}
+            variants={fadeUp}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className={`group relative overflow-hidden rounded-xl border border-gold/15 ${spans[i]}`}
+          >
+            <img
+              src={src}
+              alt={`Wedding moment ${i + 1}`}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 gpu"
+              onError={(e) => {
+                const target = e.currentTarget
+                if (!target.dataset.fallback) {
+                  target.dataset.fallback = 'true'
+                  target.src = fallbackImages[i] || '/placeholder.svg'
+                }
               }}
-              className={`group relative overflow-hidden rounded-2xl border border-gold/20 bg-card/30 ${
-                spans[i] ?? ''
-              }`}
-            >
-              <img
-                src={src || fallbackImages[i]}
-                alt={`Wedding moment ${i + 1}`}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                onError={(event) => {
-                  event.currentTarget.src = fallbackImages[i] || '/placeholder.svg'
-                }}
-              />
+            />
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-background/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          </motion.div>
+        ))}
+      </motion.div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-30" />
-            </motion.figure>
-          ))}
-        </div>
-      </div>
+      <Divider />
     </section>
   )
 }

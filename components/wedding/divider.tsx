@@ -1,23 +1,27 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { drawLine, viewportDefaults } from '@/lib/motion'
 
 export function Divider() {
   return (
     <motion.div
-      initial={{ opacity: 0, scaleX: 0.4 }}
-      whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 1, ease: 'easeOut' }}
-      className="flex items-center justify-center gap-4 py-2"
-      aria-hidden="true"
+      initial="hidden"
+      whileInView="show"
+      viewport={viewportDefaults}
+      className="mx-auto my-10 flex items-center justify-center gap-3 md:my-14"
     >
-      <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/70 sm:w-28" />
-      <span className="relative flex items-center justify-center">
-        <span className="block size-2 rotate-45 bg-gold" />
-        <span className="absolute size-3.5 rotate-45 border border-gold/50" />
-      </span>
-      <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/70 sm:w-28" />
+      <motion.span
+        variants={drawLine}
+        style={{ originX: 1 }}
+        className="block h-px w-16 origin-right bg-gradient-to-l from-gold/60 to-transparent md:w-24"
+      />
+      <span className="text-fluid-base text-gold/70">✦</span>
+      <motion.span
+        variants={drawLine}
+        style={{ originX: 0 }}
+        className="block h-px w-16 origin-left bg-gradient-to-r from-gold/60 to-transparent md:w-24"
+      />
     </motion.div>
   )
 }

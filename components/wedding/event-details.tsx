@@ -5,6 +5,7 @@ import { Clock, MapPin } from 'lucide-react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
+import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 function EventCard({
   label,
@@ -12,39 +13,42 @@ function EventCard({
   venue,
   address,
   note,
-  delay,
 }: {
   label: string
   time: string
   venue: string
   address: string
   note: string
-  delay: number
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.7, ease: 'easeOut', delay }}
-      className="relative flex flex-col items-center rounded-2xl border border-gold/25 bg-card/60 p-8 text-center glow-gold backdrop-blur-sm sm:p-10"
+      variants={fadeUp}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden rounded-2xl border border-gold/20 bg-card/40 p-7 backdrop-blur-sm md:p-10"
     >
-      <p className="font-sans text-sm font-semibold uppercase tracking-[0.4em] text-gold">
+      {/* Subtle gold glow on hover */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold/0 via-gold/0 to-gold/0 transition-all duration-500 group-hover:from-gold/[0.04] group-hover:to-gold/[0.08]" />
+
+      <p className="font-mono text-fluid-xs uppercase tracking-[0.35em] text-gold/80">
         {label}
       </p>
-      <div className="my-5 flex items-center gap-2 text-cream">
-        <Clock className="size-4 text-gold" />
-        <span className="font-sans text-xl tracking-wide">{time}</span>
+
+      <div className="mt-5 flex items-center gap-3 text-gold">
+        <Clock className="h-5 w-5 shrink-0" aria-hidden />
+        <span className="font-mono text-fluid-sm tracking-wider">{time}</span>
       </div>
-      <h3 className="font-heading text-2xl font-medium text-cream sm:text-3xl">
+
+      <h3 className="mt-5 font-heading text-fluid-2xl font-light italic text-cream md:mt-6">
         {venue}
       </h3>
-      <div className="mt-3 flex items-center justify-center gap-2 text-muted-foreground">
-        <MapPin className="size-4 text-gold/80" />
-        <span className="font-sans text-base">{address}</span>
+
+      <div className="mt-3 flex items-start gap-3 text-cream/80">
+        <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold/70" aria-hidden />
+        <p className="font-sans text-fluid-base leading-relaxed">{address}</p>
       </div>
-      <span className="my-6 h-px w-16 bg-gold/40" />
-      <p className="max-w-sm text-pretty font-sans text-base leading-relaxed text-muted-foreground">
+
+      <p className="mt-6 font-sans text-fluid-base leading-relaxed text-cream/75 md:mt-8">
         {note}
       </p>
     </motion.div>
@@ -53,36 +57,41 @@ function EventCard({
 
 export function EventDetails() {
   return (
-    <section className="relative bg-background px-6 py-24 sm:py-32">
-      <div className="mx-auto max-w-5xl">
-        <SectionHeading subtitle="Mark Your Calendar" title="Event Details" />
-        <Divider />
+    <section className="relative px-6 py-24 safe-x md:py-32">
+      <SectionHeading subtitle="The Celebration" title="When & Where" />
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="font-heading mx-auto mt-6 max-w-2xl text-balance text-center text-2xl italic leading-relaxed text-cream/90 sm:text-3xl"
-        >
-          {wedding.date.full}
-        </motion.p>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewportDefaults}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mb-12 max-w-2xl text-center font-heading text-fluid-xl font-light italic leading-snug text-cream/90 md:mb-16"
+      >
+        {wedding.date.full}
+      </motion.p>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <EventCard label="Ceremony" {...wedding.ceremony} delay={0} />
-          <EventCard label="Reception" {...wedding.reception} delay={0.12} />
-        </div>
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8"
+      >
+        <EventCard label="The Ceremony" {...wedding.ceremony} />
+        <EventCard label="The Reception" {...wedding.reception} />
+      </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mx-auto mt-10 max-w-xl text-center font-sans text-base italic leading-relaxed text-muted-foreground"
-        >
-          {wedding.shuttleNote}
-        </motion.p>
-      </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={viewportDefaults}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="mx-auto mt-10 max-w-2xl px-2 text-center font-sans text-fluid-sm italic text-cream/65 md:mt-14"
+      >
+        {wedding.shuttleNote}
+      </motion.p>
+
+      <Divider />
     </section>
   )
 }

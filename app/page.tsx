@@ -5,17 +5,40 @@ import { Gallery } from '@/components/wedding/gallery'
 import { Rsvp } from '@/components/wedding/rsvp'
 import { GiftRegistry } from '@/components/wedding/gift-registry'
 import { Footer } from '@/components/wedding/footer'
+import { LazySection } from '@/components/wedding/lazy-section'
+import { ElegantBackground } from '@/components/wedding/elegant-background'
+import { MusicPlayer } from '@/components/wedding/music-player'
 
 export default function Page() {
   return (
-    <main className="bg-background">
-      <Hero />
-      <CoupleSection />
-      <EventDetails />
-      <Gallery />
-      <Rsvp />
-      <GiftRegistry />
-      <Footer />
-    </main>
+    <>
+      <ElegantBackground />
+      <main className="relative">
+        <Hero />
+        <div
+          aria-hidden
+          className="relative h-48 bg-gradient-to-b from-background via-background/70 to-transparent"
+        />
+        <LazySection>
+          <CoupleSection />
+        </LazySection>
+        <LazySection>
+          <EventDetails />
+        </LazySection>
+        <LazySection>
+          <Gallery />
+        </LazySection>
+        <LazySection>
+          <Rsvp />
+        </LazySection>
+        <LazySection>
+          <GiftRegistry />
+        </LazySection>
+        <Footer />
+      </main>
+
+      {/* 🎵 Floating music player */}
+      <MusicPlayer />
+    </>
   )
 }

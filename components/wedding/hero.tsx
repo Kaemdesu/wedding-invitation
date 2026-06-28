@@ -1,8 +1,14 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  useMotionValueEvent,
+} from 'framer-motion'
 import dynamic from 'next/dynamic'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { ErrorBoundary } from './error-boundary'
 
@@ -13,104 +19,167 @@ const RingScene = dynamic(
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null)
+  const reduceMotion = useReducedMotion()
+  const [pastHero, setPastHero] = useState(false)
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   })
 
+
+useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+  if (latest > 0.99 && !pastHero) setPastHero(true)
+  else if (latest < 0.95 && pastHero) setPastHero(false)
+})
+
+
+  // Captions
   const t1Opacity = useTransform(scrollYProgress, [0, 0.06, 0.16, 0.22], [0, 1, 1, 0])
   const t1Y = useTransform(scrollYProgress, [0, 0.22], [30, -30])
-
   const t2Opacity = useTransform(scrollYProgress, [0.24, 0.3, 0.42, 0.48], [0, 1, 1, 0])
   const t2Y = useTransform(scrollYProgress, [0.24, 0.48], [30, -30])
 
-  const satinOpacity = useTransform(scrollYProgress, [0.5, 0.78], [0, 1])
-  const darkOverlay = useTransform(scrollYProgress, [0.5, 0.85], [0.85, 0.45])
+  // Satin roses
+  const satinOpacity = useTransform(scrollYProgress, [0.55, 0.75, 0.95], [0, 0.55, 0.7])
+  const satinScale = useTransform(scrollYProgress, [0.55, 1], [1.15, 1])
+
+  const darkOverlay = useTransform(scrollYProgress, [0, 0.5, 0.85], [0.65, 0.55, 0.35])
 
   const revealOpacity = useTransform(scrollYProgress, [0.7, 0.8], [0, 1])
   const revealY = useTransform(scrollYProgress, [0.7, 0.92], [40, 0])
+
   const namesOpacity = useTransform(scrollYProgress, [0.82, 0.92], [0, 1])
   const namesScale = useTransform(scrollYProgress, [0.82, 1], [0.92, 1])
 
-  const ringOpacity = useTransform(scrollYProgress, [0, 0.7, 0.92], [1, 1, 0.15])
+  const ringOpacity = useTransform(scrollYProgress, [0, 0.55, 0.92], [1, 1, 0.45])
   const scrollHint = useTransform(scrollYProgress, [0, 0.08], [1, 0])
 
-  return (
-    <section ref={ref} className="relative h-[460vh]">
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
-        {/* Base dark gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.2_0.03_75/0.5),oklch(0.1_0.012_270)_70%)]" />
-
-        {/* Satin + roses background */}
-        <motion.div style={{ opacity: satinOpacity }} className="absolute inset-0">
-          <img
-            src="/images/satin-roses.png"
-            alt=""
-            className="h-full w-full object-cover"
-          />
-          <motion.div
-            style={{ opacity: darkOverlay }}
-            className="absolute inset-0 bg-background"
-          />
-        </motion.div>
-
-        {/* 3D Ring — same on all screen sizes */}
-        <motion.div style={{ opacity: ringOpacity }} className="absolute inset-0">
-          <ErrorBoundary>
-            <RingScene progress={scrollYProgress} />
-          </ErrorBoundary>
-        </motion.div>
-
-        {/* Phase 1 */}
-        <motion.h1
-          style={{ opacity: t1Opacity, y: t1Y }}
-          className="font-heading pointer-events-none absolute px-6 text-center text-4xl font-medium text-cream sm:text-6xl md:text-7xl"
-        >
-          For the days that deserve forever,
-        </motion.h1>
-
-        {/* Phase 2 */}
-        <motion.h2
-          style={{ opacity: t2Opacity, y: t2Y }}
-          className="font-heading pointer-events-none absolute px-6 text-center text-3xl font-medium text-cream sm:text-5xl md:text-6xl"
-        >
-          these become our Preserved Chapters
-        </motion.h2>
-
-        {/* Final reveal */}
-        <div className="pointer-events-none absolute flex flex-col items-center px-6 text-center">
-          <motion.p
-            style={{ opacity: revealOpacity, y: revealY }}
-            className="font-sans text-sm font-semibold uppercase tracking-[0.5em] text-gold sm:text-base"
-          >
-            Are Getting Married
-          </motion.p>
-          <motion.div
-            style={{ opacity: namesOpacity, scale: namesScale }}
-            className="mt-4 flex flex-col items-center"
-          >
-            <span className="font-heading text-5xl font-semibold text-gradient-gold sm:text-7xl md:text-8xl">
-              {wedding.groom.shortName}
-            </span>
-            <span className="font-heading my-1 text-3xl text-gold sm:text-5xl">&amp;</span>
-            <span className="font-heading text-5xl font-semibold text-gradient-gold sm:text-7xl md:text-8xl">
-              {wedding.bride.shortName}
-            </span>
-            <span className="mt-5 font-sans text-lg tracking-[0.3em] text-cream/80">
-              {wedding.date.short}
-            </span>
-          </motion.div>
+  if (reduceMotion) {
+    return (
+      <section className="relative min-h-screen w-full overflow-hidden bg-background safe-top">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{ backgroundImage: 'url(/images/satin-roses.webp)' }}
+        />
+        <div className="absolute inset-0 bg-background/55" />
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center safe-x">
+          <p className="font-mono text-fluid-xs uppercase tracking-[0.4em] text-gold/80">
+            The Wedding of
+          </p>
+          <h1 className="mt-6 font-heading text-fluid-display font-light italic leading-[0.95] text-gradient-gold">
+            {wedding.groom.shortName}
+            <span className="mx-3 text-gold/60">&</span>
+            {wedding.bride.shortName}
+          </h1>
+          <p className="mt-8 font-mono text-fluid-sm tracking-[0.3em] text-cream/80">
+            {wedding.date.short}
+          </p>
         </div>
+      </section>
+    )
+  }
+
+  return (
+    <section
+      ref={ref}
+      className="relative w-full bg-background"
+      style={{ height: '320vh' }}
+    >
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        {/* Satin roses background */}
+        
+<motion.div
+  style={{ opacity: satinOpacity, scale: satinScale }}
+  className="pointer-events-none absolute inset-0 gpu"
+>
+  <img
+    src="/images/satin-roses.webp"
+    alt=""
+    aria-hidden
+    className="h-full w-full object-cover blur-sm"
+  />
+  <div className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.18_0.02_270/0.4)_0%,oklch(0.74_0.1_85/0.18)_50%,oklch(0.12_0.012_270/0.7)_100%)]" />
+</motion.div>
+
+
+        {/* 3D Ring (unmounts past hero) */}
+        {!pastHero && (
+          <motion.div
+            style={{ opacity: ringOpacity }}
+            className="pointer-events-none absolute inset-0 gpu"
+          >
+            <ErrorBoundary fallback={<div className="absolute inset-0 bg-background" />}>
+              <RingScene progress={scrollYProgress} />
+            </ErrorBoundary>
+          </motion.div>
+        )}
+
+        {/* Vignette */}
+        <motion.div
+          style={{ opacity: darkOverlay }}
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,oklch(0.12_0.012_270/0.85)_100%)]"
+        />
+
+        {/* Caption 1 */}
+        <motion.div
+          style={{ opacity: t1Opacity, y: t1Y }}
+          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 safe-x"
+        >
+          <p className="max-w-2xl text-center font-heading text-fluid-2xl font-light italic leading-snug text-cream/95 md:text-fluid-3xl">
+            For the days that deserve forever,
+          </p>
+        </motion.div>
+
+        {/* Caption 2 */}
+        <motion.div
+          style={{ opacity: t2Opacity, y: t2Y }}
+          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 safe-x"
+        >
+          <p className="max-w-2xl text-center font-heading text-fluid-2xl font-light italic leading-snug text-gradient-gold md:text-fluid-3xl">
+            these become our Preserved Chapters
+          </p>
+        </motion.div>
+
+        {/* "THE WEDDING OF" */}
+        <motion.div
+          style={{ opacity: revealOpacity, y: revealY }}
+          className="pointer-events-none absolute inset-x-0 top-[18%] z-20 flex flex-col items-center px-6 safe-x md:top-[14%]"
+        >
+          <p className="font-mono text-fluid-xs uppercase tracking-[0.4em] text-gold/85 md:tracking-[0.5em]">
+            THE WEDDING OF
+          </p>
+        </motion.div>
+
+        {/* Names */}
+        
+<motion.div
+  style={{ opacity: namesOpacity, scale: namesScale }}
+  className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center safe-x"
+>
+  <h1 className="font-heading text-fluid-display font-light italic leading-[0.9] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.85),0_0_80px_oklch(0.12_0.012_270/0.6)]">
+    <span className="block">{wedding.groom.shortName}</span>
+    <span className="my-2 block text-fluid-4xl text-gold/80 md:my-4">&</span>
+    <span className="block">{wedding.bride.shortName}</span>
+  </h1>
+  <p className="mt-8 font-mono text-fluid-sm uppercase tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:mt-12 md:tracking-[0.45em]">
+    {wedding.date.short}
+  </p>
+</motion.div>
 
         {/* Scroll hint */}
         <motion.div
           style={{ opacity: scrollHint }}
-          className="absolute bottom-10 flex flex-col items-center gap-2"
+          className="pointer-events-none absolute bottom-8 left-1/2 z-30 -translate-x-1/2 text-center safe-bottom"
         >
-          <span className="font-sans text-xs uppercase tracking-[0.35em] text-cream/60">
+          <p className="font-mono text-fluid-xs uppercase tracking-[0.4em] text-gold/70">
             Scroll
-          </span>
-          <span className="h-10 w-px bg-gradient-to-b from-gold to-transparent" />
+          </p>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="mx-auto mt-2 h-8 w-px bg-gradient-to-b from-gold/70 to-transparent"
+          />
         </motion.div>
       </div>
     </section>
