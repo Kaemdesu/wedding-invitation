@@ -1,16 +1,20 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, Pin, Sparkles, Send, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Heart, Pin, Sparkles, Send, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
-import { fadeUp, viewportDefaults, easeLuxury } from '@/lib/motion'
+import { viewportDefaults, easeLuxury } from '@/lib/motion'
 import type { PublicWish } from '@/lib/supabase'
 
 const PER_PAGE = 6 // wishes shown per "page" in carousel
 const AUTO_ROTATE_MS = 7000 // how often pages rotate (7s)
+
+/** Browser-side cooldown (per device) */
+const BROWSER_COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
+const COOLDOWN_KEY = 'wishes-last-sent'
 
 function timeAgo(iso: string): string {
   const now = Date.now()
@@ -31,6 +35,15 @@ function timeAgo(iso: string): string {
 
 function firstName(full: string): string {
   return full.trim().split(/\s+/)[0]
+}
+
+function getCooldownRemaining(): number {
+  if (typeof window === 'undefined') return 0
+  const last = localStorage.getItem(COOLDOWN_KEY)
+  if (!last) return 0
+  const elapsed = Date.now() - Number(last)
+  const remaining = BROWSER_COOLDOWN_MS - elapsed
+  return remaining > 0 ? remaining : 0
 }
 
 function WishCard({ wish }: { wish: PublicWish }) {
@@ -81,7 +94,6 @@ export function WishesWall() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
-  const [paused, setPaused] = useState(false)
 
   // Form state
   const [name, setName] = useState('')
@@ -130,7 +142,6 @@ export function WishesWall() {
             return [newWish, ...prev]
           })
           setTotal((t) => t + 1)
-          // Bounce back to first page so guests see it
           setPage(0)
         }
       )
@@ -183,14 +194,14 @@ export function WishesWall() {
     safePage * PER_PAGE + PER_PAGE
   )
 
-  /** Auto-rotate */
+  /** Auto-rotate (always on) */
   useEffect(() => {
-    if (paused || totalPages <= 1) return
+    if (totalPages <= 1) return
     const interval = setInterval(() => {
       setPage((p) => (p + 1) % totalPages)
     }, AUTO_ROTATE_MS)
     return () => clearInterval(interval)
-  }, [paused, totalPages])
+  }, [totalPages])
 
   // Reset to page 0 if total pages shrinks
   useEffect(() => {
@@ -200,70 +211,60 @@ export function WishesWall() {
   const goPrev = () => setPage((p) => (p - 1 + totalPages) % totalPages)
   const goNext = () => setPage((p) => (p + 1) % totalPages)
 
-/** Browser-side cooldown (per device) */
-const BROWSER_COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
-const COOLDOWN_KEY = 'wishes-last-sent'
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (submitting) return
 
-function getCooldownRemaining(): number {
-  if (typeof window === 'undefined') return 0
-  const last = localStorage.getItem(COOLDOWN_KEY)
-  if (!last) return 0
-  const elapsed = Date.now() - Number(last)
-  const remaining = BROWSER_COOLDOWN_MS - elapsed
-  return remaining > 0 ? remaining : 0
-}
-
-async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault()
-  if (submitting) return
-
-  // Check browser cooldown first (instant feedback, no server round-trip)
-  const remaining = getCooldownRemaining()
-  if (remaining > 0) {
-    const secs = Math.ceil(remaining / 1000)
-    setErrorMsg(
-      `Please wait ${secs > 60 ? `${Math.ceil(secs / 60)} minute${secs > 90 ? 's' : ''}` : `${secs} seconds`} before sending another wish.`
-    )
-    setStatus('error')
-    return
-  }
-
-  setSubmitting(true)
-  setStatus('idle')
-  setErrorMsg('')
-
-  try {
-    const res = await fetch('/api/wishes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, message }),
-    })
-    const data = await res.json()
-    if (!res.ok) {
-      setErrorMsg(data.error || 'Failed to send wish. Please try again.')
+    // Browser cooldown check (instant feedback, no server round-trip)
+    const remaining = getCooldownRemaining()
+    if (remaining > 0) {
+      const secs = Math.ceil(remaining / 1000)
+      setErrorMsg(
+        `Please wait ${
+          secs > 60
+            ? `${Math.ceil(secs / 60)} minute${secs > 90 ? 's' : ''}`
+            : `${secs} seconds`
+        } before sending another wish.`
+      )
       setStatus('error')
-    } else {
-      if (data.wish) {
-        setWishes((prev) => {
-          if (prev.some((w) => w.id === data.wish.id)) return prev
-          return [data.wish, ...prev]
-        })
-        setTotal((t) => t + 1)
-        setPage(0)
-      }
-      // Save timestamp for browser cooldown
-      localStorage.setItem(COOLDOWN_KEY, String(Date.now()))
-      setStatus('success')
-      setName('')
-      setMessage('')
-      setTimeout(() => setStatus('idle'), 4000)
+      return
     }
-  } catch {
-    setErrorMsg('Network error. Please try again.')
-    setStatus('error')
+
+    setSubmitting(true)
+    setStatus('idle')
+    setErrorMsg('')
+
+    try {
+      const res = await fetch('/api/wishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Failed to send wish. Please try again.')
+        setStatus('error')
+      } else {
+        if (data.wish) {
+          setWishes((prev) => {
+            if (prev.some((w) => w.id === data.wish.id)) return prev
+            return [data.wish, ...prev]
+          })
+          setTotal((t) => t + 1)
+          setPage(0)
+        }
+        localStorage.setItem(COOLDOWN_KEY, String(Date.now()))
+        setStatus('success')
+        setName('')
+        setMessage('')
+        setTimeout(() => setStatus('idle'), 4000)
+      }
+    } catch {
+      setErrorMsg('Network error. Please try again.')
+      setStatus('error')
+    }
+    setSubmitting(false)
   }
-  setSubmitting(false)
-}
 
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
@@ -299,12 +300,8 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
             Be the first to leave a wish ✨
           </motion.p>
         ) : (
-          <div
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onTouchStart={() => setPaused(true)}
-          >
-            {/* Carousel — animated page transition */}
+          <div>
+            {/* Carousel */}
             <div className="relative min-h-[500px] md:min-h-[420px]">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -341,7 +338,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                   ))}
                 </div>
 
-                {/* Arrow + pause controls */}
+                {/* Navigation arrows */}
                 <div className="flex items-center gap-3">
                   <button
                     onClick={goPrev}
@@ -349,13 +346,6 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
                   >
                     <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => setPaused((p) => !p)}
-                    aria-label={paused ? 'Resume rotation' : 'Pause rotation'}
-                    className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
-                  >
-                    {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                   </button>
                   <button
                     onClick={goNext}
