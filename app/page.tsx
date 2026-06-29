@@ -4,6 +4,7 @@ import { EventDetails } from '@/components/wedding/event-details'
 import { Gallery } from '@/components/wedding/gallery'
 import { Rsvp } from '@/components/wedding/rsvp'
 import { GiftRegistry } from '@/components/wedding/gift-registry'
+import { Countdown } from '@/components/wedding/countdown'
 import { Footer } from '@/components/wedding/footer'
 import { LazySection } from '@/components/wedding/lazy-section'
 import { ElegantBackground } from '@/components/wedding/elegant-background'
@@ -34,10 +35,11 @@ export default function Page() {
         <LazySection>
           <GiftRegistry />
         </LazySection>
+        <LazySection>
+          <Countdown />
+        </LazySection>
         <Footer />
       </main>
-
-      {/* 🎵 Floating music player */}
       <MusicPlayer />
     </>
   )
