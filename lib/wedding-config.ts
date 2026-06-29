@@ -52,4 +52,43 @@ export const wedding = {
     '/images/gallery-5.webp',
     '/images/gallery-6.webp',
   ],
+  /**
+   * Sufi-inspired poetic transitions between sections.
+   * Each pair of lines whispers the theme of the chapter ahead.
+   */
+  poetry: {
+    afterHero: [
+      'Bismillah — in the Name of the One,',
+      'who weaves two hearts into a single thread.',
+    ],
+    afterCouple: [
+      'From a single soul, He created its mate,',
+      'that they might find peace in one another.',
+    ],
+    afterEvents: [
+      'Every place becomes sacred',
+      'when love is the prayer being said.',
+    ],
+    afterGallery: [
+      'The past is a garden,',
+      'walked by the One who plants every step.',
+    ],
+    afterRsvp: [
+      'Bear witness, you who love us —',
+      'the angels write your name in light.',
+    ],
+    afterWishes: [
+      'Your prayers rise like incense,',
+      'and return as mercy upon our days.',
+    ],
+    afterGifts: [
+      'Your presence is the dearest gift,',
+      'for love is the only currency of the soul.',
+    ],
+    afterCountdown: [
+      'In every breath, in every silence,',
+      'we are drawing nearer.',
+    ],
+  },
 }
+

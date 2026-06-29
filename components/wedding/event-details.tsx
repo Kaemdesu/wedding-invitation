@@ -13,13 +13,11 @@ function EventCard({
   time,
   venue,
   address,
-  note,
 }: {
   label: string
   time: string
   venue: string
   address: string
-  note: string
 }) {
   return (
     <motion.div
@@ -28,7 +26,6 @@ function EventCard({
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="group relative overflow-hidden rounded-2xl border border-gold/20 bg-card/40 p-7 backdrop-blur-sm md:p-10"
     >
-      {/* Subtle gold glow on hover */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold/0 via-gold/0 to-gold/0 transition-all duration-500 group-hover:from-gold/[0.04] group-hover:to-gold/[0.08]" />
 
       <p className="font-mono text-fluid-xs uppercase tracking-[0.35em] text-gold/80">
@@ -48,10 +45,6 @@ function EventCard({
         <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold/70" aria-hidden />
         <p className="font-sans text-fluid-base leading-relaxed">{address}</p>
       </div>
-
-      <p className="mt-6 font-sans text-fluid-base leading-relaxed text-cream/75 md:mt-8">
-        {note}
-      </p>
     </motion.div>
   )
 }
@@ -78,22 +71,21 @@ export function EventDetails() {
         viewport={viewportDefaults}
         className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8"
       >
-        <EventCard label="The Ceremony" {...wedding.ceremony} />
-        <EventCard label="The Reception" {...wedding.reception} />
+        <EventCard
+          label="The Ceremony"
+          time={wedding.ceremony.time}
+          venue={wedding.ceremony.venue}
+          address={wedding.ceremony.address}
+        />
+        <EventCard
+          label="The Reception"
+          time={wedding.reception.time}
+          venue={wedding.reception.venue}
+          address={wedding.reception.address}
+        />
       </motion.div>
 
-      {/* 🗺️ Embedded Google Map */}
       <VenueMap />
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={viewportDefaults}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="mx-auto mt-10 max-w-2xl px-2 text-center font-sans text-fluid-sm italic text-cream/65 md:mt-14"
-      >
-        {wedding.shuttleNote}
-      </motion.p>
 
       <Divider />
     </section>
