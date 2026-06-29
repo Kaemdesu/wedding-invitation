@@ -200,44 +200,70 @@ export function WishesWall() {
   const goPrev = () => setPage((p) => (p - 1 + totalPages) % totalPages)
   const goNext = () => setPage((p) => (p + 1) % totalPages)
 
-  /** Submit handler */
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (submitting) return
-    setSubmitting(true)
-    setStatus('idle')
-    setErrorMsg('')
+/** Browser-side cooldown (per device) */
+const BROWSER_COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
+const COOLDOWN_KEY = 'wishes-last-sent'
 
-    try {
-      const res = await fetch('/api/wishes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, message }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setErrorMsg(data.error || 'Failed to send wish. Please try again.')
-        setStatus('error')
-      } else {
-        if (data.wish) {
-          setWishes((prev) => {
-            if (prev.some((w) => w.id === data.wish.id)) return prev
-            return [data.wish, ...prev]
-          })
-          setTotal((t) => t + 1)
-          setPage(0)
-        }
-        setStatus('success')
-        setName('')
-        setMessage('')
-        setTimeout(() => setStatus('idle'), 4000)
-      }
-    } catch {
-      setErrorMsg('Network error. Please try again.')
-      setStatus('error')
-    }
-    setSubmitting(false)
+function getCooldownRemaining(): number {
+  if (typeof window === 'undefined') return 0
+  const last = localStorage.getItem(COOLDOWN_KEY)
+  if (!last) return 0
+  const elapsed = Date.now() - Number(last)
+  const remaining = BROWSER_COOLDOWN_MS - elapsed
+  return remaining > 0 ? remaining : 0
+}
+
+async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault()
+  if (submitting) return
+
+  // Check browser cooldown first (instant feedback, no server round-trip)
+  const remaining = getCooldownRemaining()
+  if (remaining > 0) {
+    const secs = Math.ceil(remaining / 1000)
+    setErrorMsg(
+      `Please wait ${secs > 60 ? `${Math.ceil(secs / 60)} minute${secs > 90 ? 's' : ''}` : `${secs} seconds`} before sending another wish.`
+    )
+    setStatus('error')
+    return
   }
+
+  setSubmitting(true)
+  setStatus('idle')
+  setErrorMsg('')
+
+  try {
+    const res = await fetch('/api/wishes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setErrorMsg(data.error || 'Failed to send wish. Please try again.')
+      setStatus('error')
+    } else {
+      if (data.wish) {
+        setWishes((prev) => {
+          if (prev.some((w) => w.id === data.wish.id)) return prev
+          return [data.wish, ...prev]
+        })
+        setTotal((t) => t + 1)
+        setPage(0)
+      }
+      // Save timestamp for browser cooldown
+      localStorage.setItem(COOLDOWN_KEY, String(Date.now()))
+      setStatus('success')
+      setName('')
+      setMessage('')
+      setTimeout(() => setStatus('idle'), 4000)
+    }
+  } catch {
+    setErrorMsg('Network error. Please try again.')
+    setStatus('error')
+  }
+  setSubmitting(false)
+}
 
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">

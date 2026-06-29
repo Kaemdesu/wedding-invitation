@@ -95,33 +95,33 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // ---- Rate limit: 1 wish per IP per 5 minutes ----
-    const ipAddress =
-      req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-      req.headers.get('x-real-ip') ||
-      null
-    const userAgent = req.headers.get('user-agent') || null
+// ---- Rate limit: max 5 wishes per IP per 10 minutes (handles families on same WiFi) ----
+const ipAddress =
+  req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+  req.headers.get('x-real-ip') ||
+  null
+const userAgent = req.headers.get('user-agent') || null
 
-    const supabase = getSupabaseAdmin()
+const supabase = getSupabaseAdmin()
 
-    if (ipAddress) {
-      const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString()
-      const { count } = await supabase
-        .from('wishes')
-        .select('id', { count: 'exact', head: true })
-        .eq('ip_address', ipAddress)
-        .gte('created_at', fiveMinAgo)
+if (ipAddress) {
+  const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+  const { count } = await supabase
+    .from('wishes')
+    .select('id', { count: 'exact', head: true })
+    .eq('ip_address', ipAddress)
+    .gte('created_at', tenMinAgo)
 
-      if ((count || 0) >= 1) {
-        return NextResponse.json(
-          {
-            error:
-              'You just submitted a wish — please wait a few minutes before sending another. 💌',
-          },
-          { status: 429 }
-        )
-      }
-    }
+  if ((count || 0) >= 5) {
+    return NextResponse.json(
+      {
+        error:
+          'Many wishes have been sent from this network. Please try again in a few minutes. 💌',
+      },
+      { status: 429 }
+    )
+  }
+}
 
     // ---- Insert ----
     const { data, error } = await supabase
