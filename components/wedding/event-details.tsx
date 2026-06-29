@@ -5,6 +5,7 @@ import { Clock, MapPin } from 'lucide-react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { Divider } from './divider'
+import { VenueMap } from './venue-map'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 function EventCard({
@@ -80,6 +81,9 @@ export function EventDetails() {
         <EventCard label="The Ceremony" {...wedding.ceremony} />
         <EventCard label="The Reception" {...wedding.reception} />
       </motion.div>
+
+      {/* 🗺️ Embedded Google Map */}
+      <VenueMap />
 
       <motion.p
         initial={{ opacity: 0 }}

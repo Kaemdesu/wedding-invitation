@@ -32,6 +32,18 @@ export const wedding = {
   },
   shuttleNote:
     'A complimentary shuttle service will run between the main parking area and the venue throughout the day.',
+  /**
+   * Map config — used by VenueMap component for embed + directions
+   * Coordinates pinned precisely on Masjid Izzatul Islam, Grand Wisata Bekasi
+   */
+  venue: {
+    name: 'Masjid Izzatul Islam',
+    fullAddress: 'Masjid Izzatul Islam, Grand Wisata, Bekasi, West Java, Indonesia',
+    lat: -6.285576421702599,
+    lng: 107.04020836931957,
+    /** Optional: Google Place ID for even more precise "Open in Maps" deep link */
+    placeId: '',
+  },
   gallery: [
     '/images/gallery-1.webp',
     '/images/gallery-2.webp',
