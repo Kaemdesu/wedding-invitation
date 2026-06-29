@@ -3,6 +3,7 @@ import { CoupleSection } from '@/components/wedding/couple-section'
 import { EventDetails } from '@/components/wedding/event-details'
 import { Gallery } from '@/components/wedding/gallery'
 import { Rsvp } from '@/components/wedding/rsvp'
+import { WishesWall } from '@/components/wedding/wishes-wall'
 import { GiftRegistry } from '@/components/wedding/gift-registry'
 import { Countdown } from '@/components/wedding/countdown'
 import { Footer } from '@/components/wedding/footer'
@@ -31,6 +32,9 @@ export default function Page() {
         </LazySection>
         <LazySection>
           <Rsvp />
+        </LazySection>
+        <LazySection>
+          <WishesWall />
         </LazySection>
         <LazySection>
           <GiftRegistry />

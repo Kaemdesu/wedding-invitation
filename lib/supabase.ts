@@ -48,3 +48,17 @@ export type Gift = {
 
 /** Public view of a gift (no email leaked) */
 export type PublicGift = Omit<Gift, 'reserved_by_email' | 'ip_address' | 'user_agent'>
+
+export type Wish = {
+  id: string
+  name: string
+  message: string
+  is_pinned: boolean
+  is_hidden: boolean
+  ip_address: string | null
+  user_agent: string | null
+  created_at: string
+}
+
+/** Public view — no IP/user_agent leaked */
+export type PublicWish = Omit<Wish, 'ip_address' | 'user_agent' | 'is_hidden'>
