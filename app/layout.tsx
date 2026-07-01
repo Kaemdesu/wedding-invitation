@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Cormorant_Garamond, Geist_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -19,6 +20,34 @@ const cormorant = Cormorant_Garamond({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+})
+
+// ✨ Kepler Std — for framing text (captions, "The Wedding of", date)
+const kepler = localFont({
+  variable: '--font-kepler',
+  display: 'swap',
+  src: [
+    { path: '../public/fonts/KeplerStd-BoldScnDisp.otf', weight: '700', style: 'normal' },
+    { path: '../public/fonts/KeplerStd-BoldScnItDisp.otf', weight: '700', style: 'italic' },
+  ],
+})
+
+// ✨ Geographica Script — for names
+const geographica = localFont({
+  variable: '--font-geographica',
+  display: 'swap',
+  src: [
+    { path: '../public/fonts/Geographica-Script.otf', weight: '400', style: 'normal' },
+  ],
+})
+
+// ✨ Aldhabi — for Arabic text (Bismillah + Ar-Rum 21)
+const aldhabi = localFont({
+  variable: '--font-aldhabi',
+  display: 'swap',
+  src: [
+    { path: '../public/fonts/aldhabi.ttf', weight: '400', style: 'normal' },
+  ],
 })
 
 export const metadata: Metadata = {
@@ -41,7 +70,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${cormorant.variable} ${geistMono.variable} bg-background`}
+      className={`${playfair.variable} ${cormorant.variable} ${geistMono.variable} ${kepler.variable} ${geographica.variable} ${aldhabi.variable} bg-background`}
     >
       <body className="font-sans antialiased">
         {children}

@@ -57,10 +57,7 @@ export const wedding = {
    * Each pair of lines whispers the theme of the chapter ahead.
    */
   poetry: {
-    afterHero: [
-      'Bismillah — in the Name of the One,',
-      'who weaves two hearts into a single thread.',
-    ],
+
     afterCouple: [
       'From a single soul, He created its mate,',
       'that they might find peace in one another.',

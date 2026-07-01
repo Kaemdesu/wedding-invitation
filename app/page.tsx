@@ -11,6 +11,7 @@ import { LazySection } from '@/components/wedding/lazy-section'
 import { ElegantBackground } from '@/components/wedding/elegant-background'
 import { MusicPlayer } from '@/components/wedding/music-player'
 import { PoetryTransition } from '@/components/wedding/poetry-transition'
+import { BismillahTransition } from '@/components/wedding/bismillah-transition'
 import { wedding } from '@/lib/wedding-config'
 
 export default function Page() {
@@ -26,8 +27,8 @@ export default function Page() {
           className="relative h-48 bg-gradient-to-b from-background via-background/70 to-transparent"
         />
 
-        {/* ✦ Chapter 1 */}
-        <PoetryTransition lines={wedding.poetry.afterHero} />
+        {/* ✦ Chapter 1 — Bismillah + Ar-Rum 21 (replaces old poetry) */}
+        <BismillahTransition />
 
         <LazySection>
           <CoupleSection />

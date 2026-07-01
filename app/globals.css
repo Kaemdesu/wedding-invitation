@@ -9,6 +9,8 @@
   --font-sans: var(--font-cormorant), 'Cormorant Garamond', serif;
   --font-serif: var(--font-playfair), 'Playfair Display', serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+  --font-kepler: var(--font-kepler), 'Kepler Std', Georgia, serif;
+  --font-geographica: var(--font-geographica), 'Geographica Script', 'Great Vibes', cursive;
 
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
@@ -244,10 +246,25 @@
   }
 }
 
-@layer utilities {
-  /* ...your existing utilities... */
 
-  /* Optimize scroll performance */
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+  
+  /* ✨ NEW — Kepler utility, use with `italic` and no font-light */
+  .font-kepler {
+    font-family: var(--font-kepler);
+    font-weight: 700; /* Kepler Display only comes in Bold */
+  }
+
+  
+  .font-geographica {
+    font-family: var(--font-geographica);
+    font-weight: 400;
+  }
+
+
   .scroll-optimize {
     contain: layout style paint;
     content-visibility: auto;
