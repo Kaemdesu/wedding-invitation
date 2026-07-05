@@ -63,9 +63,9 @@ export function Hero() {
           <p className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/85">
             The Wedding of
           </p>
-          <h1 className="mt-6 flex flex-col items-center overflow-visible pt-2 font-geographica text-fluid-display leading-[0.85] text-gradient-gold">
+          <h1 className="mt-6 flex flex-col items-center overflow-visible pt-6 font-geographica text-fluid-display leading-[1] text-gradient-gold">
             <span className="block">{wedding.bride.shortName}</span>
-            <span className="-mt-6 block text-fluid-5xl text-gold/85 md:-mt-8">&amp;</span>
+            <span className="my-1 block text-fluid-5xl leading-none text-gold/85">&amp;</span>
             <span className="block">{wedding.groom.shortName}</span>
           </h1>
           <p className="mt-6 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90">
@@ -140,9 +140,9 @@ export function Hero() {
             The Wedding of
           </motion.p>
 
-          <h1 className="mt-4 flex flex-col items-center overflow-visible pt-2 font-geographica text-fluid-display leading-[0.85] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-6">
+          <h1 className="mt-4 flex flex-col items-center overflow-visible pt-6 font-geographica text-fluid-display leading-[1] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-6 md:pt-8">
             <span className="block">{wedding.bride.shortName}</span>
-            <span className="-mt-6 block text-fluid-5xl text-gold/85 md:-mt-10">&amp;</span>
+            <span className="my-1 block text-fluid-5xl leading-none text-gold/85 md:my-2">&amp;</span>
             <span className="block">{wedding.groom.shortName}</span>
           </h1>
 
