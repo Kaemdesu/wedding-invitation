@@ -63,10 +63,10 @@ export function Hero() {
           <p className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/85">
             The Wedding of
           </p>
-          <h1 className="mt-6 flex flex-col items-center overflow-visible pt-6 font-geographica text-fluid-display leading-[1] text-gradient-gold">
-            <span className="block">{wedding.bride.shortName}</span>
-            <span className="my-1 block text-fluid-5xl leading-none text-gold/85">&amp;</span>
-            <span className="block">{wedding.groom.shortName}</span>
+          <h1 className="mt-6 flex flex-col items-center overflow-visible font-geographica text-gradient-gold">
+            <span className="block text-fluid-display leading-none pt-6 pb-2">{wedding.bride.shortName}</span>
+            <span className="block text-fluid-5xl leading-none text-gold/85 my-2">&amp;</span>
+            <span className="block text-fluid-display leading-none pt-2 pb-6">{wedding.groom.shortName}</span>
           </h1>
           <p className="mt-6 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90">
             {wedding.date.short}
@@ -140,10 +140,10 @@ export function Hero() {
             The Wedding of
           </motion.p>
 
-          <h1 className="mt-4 flex flex-col items-center overflow-visible pt-6 font-geographica text-fluid-display leading-[1] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-6 md:pt-8">
-            <span className="block">{wedding.bride.shortName}</span>
-            <span className="my-1 block text-fluid-5xl leading-none text-gold/85 md:my-2">&amp;</span>
-            <span className="block">{wedding.groom.shortName}</span>
+          <h1 className="mt-4 flex flex-col items-center overflow-visible font-geographica text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-6">
+            <span className="block text-fluid-display leading-none pt-6 pb-2 md:pt-8 md:pb-3">{wedding.bride.shortName}</span>
+            <span className="block text-fluid-5xl leading-none text-gold/85 my-2 md:my-3">&amp;</span>
+            <span className="block text-fluid-display leading-none pt-2 pb-6 md:pt-3 md:pb-8">{wedding.groom.shortName}</span>
           </h1>
 
           <p className="mt-4 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.9)] md:mt-6 md:text-fluid-base md:tracking-[0.45em]">
