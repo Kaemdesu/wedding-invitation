@@ -4,46 +4,79 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-function verifyPin(req: NextRequest): boolean {
-  const pin = req.headers.get('x-admin-pin')
-  const expected = process.env.ADMIN_PIN
-  return !!pin && !!expected && pin === expected
+// Debug endpoint — visit /api/rsvp in browser to check if route exists
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    message: 'RSVP endpoint is live',
+    timestamp: new Date().toISOString(),
+  })
 }
 
-export async function GET(req: NextRequest) {
-  if (!verifyPin(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+type RsvpPayload = {
+  fullName?: string
+  email?: string
+  attendance?: 'accept' | 'decline'
+}
+
+export async function POST(req: NextRequest) {
   try {
+    const body = (await req.json()) as RsvpPayload
+
+    const fullName = body.fullName?.trim()
+    const email = body.email?.trim().toLowerCase()
+    const attendance = body.attendance
+
+    if (!fullName || fullName.length < 2) {
+      return NextResponse.json({ error: 'Please enter your full name' }, { status: 400 })
+    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: 'Please enter a valid email' }, { status: 400 })
+    }
+    if (attendance !== 'accept' && attendance !== 'decline') {
+      return NextResponse.json({ error: 'Please select attendance' }, { status: 400 })
+    }
+
+    const ipAddress =
+      req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+      req.headers.get('x-real-ip') ||
+      null
+    const userAgent = req.headers.get('user-agent') || null
+
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('rsvps')
-      .select('*')
-      .order('created_at', { ascending: false })
-    if (error) throw error
-    return NextResponse.json({ rsvps: data || [] })
-  } catch (err) {
-    console.error('[ADMIN RSVPS GET] Error:', err)
-    return NextResponse.json({ error: 'Failed to load RSVPs' }, { status: 500 })
-  }
-}
+      .insert({
+        full_name: fullName,
+        email,
+        attendance,
+        ip_address: ipAddress,
+        user_agent: userAgent,
+      })
+      .select('id')
+      .single()
 
-export async function DELETE(req: NextRequest) {
-  if (!verifyPin(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  try {
-    const { searchParams } = new URL(req.url)
-    const rsvpId = searchParams.get('id')?.trim()
-    if (!rsvpId) {
-      return NextResponse.json({ error: 'RSVP ID is required' }, { status: 400 })
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { error: 'This email has already submitted an RSVP. Thank you!' },
+          { status: 409 }
+        )
+      }
+      console.error('[RSVP] Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Failed to save RSVP: ' + error.message },
+        { status: 500 }
+      )
     }
-    const supabase = getSupabaseAdmin()
-    const { error } = await supabase.from('rsvps').delete().eq('id', rsvpId)
-    if (error) throw error
-    return NextResponse.json({ ok: true })
+
+    return NextResponse.json({ ok: true, id: data.id })
   } catch (err) {
-    console.error('[ADMIN RSVPS DELETE] Error:', err)
-    return NextResponse.json({ error: 'Failed to delete RSVP' }, { status: 500 })
+    console.error('[RSVP] Unexpected error:', err)
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    return NextResponse.json(
+      { error: 'Server error: ' + msg },
+      { status: 500 }
+    )
   }
 }
