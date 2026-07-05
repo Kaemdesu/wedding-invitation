@@ -7,20 +7,20 @@ import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 export function Footer() {
   return (
     <footer className="relative left-1/2 right-1/2 -mx-[50vw] flex min-h-screen w-screen items-center justify-center overflow-hidden">
-      {/* The couple photo — MASKED to fade in from top and out at bottom */}
+      {/* The couple photo — top fades in smoothly, bottom stays fully visible */}
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: 'url(/images/footer-couple.jpg)',
           maskImage:
-            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 80%, rgba(0,0,0,0.6) 92%, transparent 100%)',
+            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 100%)',
           WebkitMaskImage:
-            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 80%, rgba(0,0,0,0.6) 92%, transparent 100%)',
+            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 100%)',
         }}
       />
 
-      {/* Soft dark overlay so text stays readable (photo still visible in center) */}
+      {/* Soft dark overlay so text stays readable (photo still visible) */}
       <div
         aria-hidden
         className="absolute inset-0 bg-background/30"
