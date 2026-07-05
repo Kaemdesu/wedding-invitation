@@ -102,6 +102,12 @@ export function GiftRegistry() {
     setReserveError('')
   }
 
+  const openShop = (url: string) => {
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
       <SectionHeading subtitle="Gift Registry" title="With love & gratitude" />
@@ -189,7 +195,7 @@ export function GiftRegistry() {
                     {gift.shop_url && (
                       <button
                         type="button"
-                        onClick={() => window.open(gift.shop_url as string, '_blank', 'noopener,noreferrer')}
+                        onClick={() => openShop(gift.shop_url as string)}
                         className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gold/20 bg-background/30 px-3 py-2 font-mono text-fluid-xs uppercase tracking-wider text-cream/75 transition hover:border-gold/40 hover:text-cream"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />

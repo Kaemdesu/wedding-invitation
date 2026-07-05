@@ -5,15 +5,10 @@ import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
-function Portrait({
-  person,
-  align,
-}: {
-  person: { name: string; bio: string; photo: string }
-  align: 'left' | 'right'
-}) {
-  const alignClass = align === 'left' ? 'md:items-start md:text-left' : 'md:items-end md:text-right'
+type Person = { name: string; bio: string; photo: string }
 
+function Portrait({ person, align }: { person: Person; align: 'left' | 'right' }) {
+  const alignClass = align === 'left' ? 'md:items-start md:text-left' : 'md:items-end md:text-right'
   return (
     <motion.div variants={fadeUp} className={'flex flex-col items-center text-center ' + alignClass}>
       <div

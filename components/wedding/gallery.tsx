@@ -51,7 +51,7 @@ export function Gallery() {
             <div
               role="img"
               aria-label={'Wedding moment ' + (i + 1)}
-              className="arent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000over:opacity-100" />
           </motion.div>
         ))}
       </motion.div>
