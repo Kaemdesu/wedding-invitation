@@ -4,7 +4,7 @@ import { EventDetails } from '@/components/wedding/event-details'
 import { Gallery } from '@/components/wedding/gallery'
 import { Rsvp } from '@/components/wedding/rsvp'
 import { WishesWall } from '@/components/wedding/wishes-wall'
-import { GiftRegistry } from '@/components/wedding/gift-registry'
+import { GiftRegistryCta } from '@/components/wedding/gift-registry-cta'
 import { Countdown } from '@/components/wedding/countdown'
 import { Footer } from '@/components/wedding/footer'
 import { LazySection } from '@/components/wedding/lazy-section'
@@ -23,7 +23,7 @@ export default function Page() {
 
         <div
           aria-hidden
-          className="relative h-48 bg-gradient-to-b from-background via-background/70 to-transparent"
+          className="relative h-48 bg-linear-to-b from-background via-background/70 to-transparent"
         />
 
         <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-4 md:px-0">
@@ -60,7 +60,7 @@ export default function Page() {
           <PoetryTransition lines={wedding.poetry.afterWishes} />
 
           <LazySection>
-            <GiftRegistry />
+            <GiftRegistryCta />
           </LazySection>
 
           <PoetryTransition lines={wedding.poetry.afterGifts} />
