@@ -19,11 +19,9 @@ function Portrait({
       <div
         role="img"
         aria-label={person.name}
-        className="group relative h-72 w-72 overflow-hidden rounded-2xl border border-gold/20 bg-cover bg-center transition-transform duration-1000 ease-out hover:scale-105 gpu sm:h-80 sm:w-80 md:h-96 md:w-96"
+        className="relative aspect-[3/4] w-72 bg-contain bg-center bg-no-repeat sm:w-80 md:w-96 lg:w-[26rem]"
         style={{ backgroundImage: 'url(' + person.photo + ')' }}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent" />
-      </div>
+      />
       <h3 className="mt-6 font-heading text-fluid-2xl font-light italic text-gradient-gold md:mt-8">
         {person.name}
       </h3>

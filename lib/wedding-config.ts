@@ -3,13 +3,13 @@ export const wedding = {
     name: 'Annisa Fajri Luthfiani',
     shortName: 'Annisa',
     bio: 'A gentle soul with an endless love for poetry, quiet mornings, and the people she holds dear. Her warmth turns every ordinary moment into something worth remembering.',
-    photo: '/images/bride.webp',
+    photo: '/images/bride-frame.png',
   },
   groom: {
     name: 'Kelvin Muliawan',
     shortName: 'Kelvin',
     bio: 'A dreamer and a builder, steady and kind, with a heart set on a lifetime of shared adventures. He believes the best stories are the ones written together.',
-    photo: '/images/groom.webp',
+    photo: '/images/groom-frame.png',
   },
   date: {
     full: 'Saturday, the Eighth of August, Two Thousand and Twenty-Six',
@@ -32,16 +32,11 @@ export const wedding = {
   },
   shuttleNote:
     'A complimentary shuttle service will run between the main parking area and the venue throughout the day.',
-  /**
-   * Map config — used by VenueMap component for embed + directions
-   * Coordinates pinned precisely on Masjid Izzatul Islam, Grand Wisata Bekasi
-   */
   venue: {
     name: 'Masjid Izzatul Islam',
     fullAddress: 'Masjid Izzatul Islam, Grand Wisata, Bekasi, West Java, Indonesia',
     lat: -6.285576421702599,
     lng: 107.04020836931957,
-    /** Optional: Google Place ID for even more precise "Open in Maps" deep link */
     placeId: '',
   },
   gallery: [
@@ -52,12 +47,7 @@ export const wedding = {
     '/images/gallery-5.webp',
     '/images/gallery-6.webp',
   ],
-  /**
-   * Sufi-inspired poetic transitions between sections.
-   * Each pair of lines whispers the theme of the chapter ahead.
-   */
   poetry: {
-
     afterCouple: [
       'From a single soul, He created its mate,',
       'that they might find peace in one another.',
@@ -88,4 +78,3 @@ export const wedding = {
     ],
   },
 }
-
