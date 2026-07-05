@@ -40,14 +40,17 @@ export type Gift = {
   reserved_by_name: string | null
   reserved_by_email: string | null
   reserved_at: string | null
+  purchased_message: string | null
   display_order: number
   is_active: boolean
   created_at: string
   updated_at: string
 }
 
-/** Public view of a gift (no email leaked) */
-export type PublicGift = Omit<Gift, 'reserved_by_email' | 'ip_address' | 'user_agent'>
+export type PublicGift = Omit<
+  Gift,
+  'reserved_by_email' | 'reserved_by_name' | 'purchased_message'
+>
 
 export type Wish = {
   id: string
@@ -60,5 +63,17 @@ export type Wish = {
   created_at: string
 }
 
-/** Public view — no IP/user_agent leaked */
 export type PublicWish = Omit<Wish, 'ip_address' | 'user_agent' | 'is_hidden'>
+
+export type SiteSettings = {
+  id: number
+  delivery_recipient: string
+  delivery_phone: string
+  delivery_address: string
+  delivery_notes: string
+  bca_account_number: string
+  bca_account_name: string
+  updated_at: string
+}
+
+export type PublicSiteSettings = Omit<SiteSettings, 'id' | 'updated_at'>
