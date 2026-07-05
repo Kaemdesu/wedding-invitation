@@ -12,7 +12,6 @@ export function BismillahTransition() {
       aria-label="Opening prayer — Ar-Rum 21"
     >
       <div className="mx-auto max-w-3xl px-6 text-center safe-x">
-        {/* Bismillah */}
         <motion.p
           dir="rtl"
           lang="ar"
@@ -29,16 +28,6 @@ export function BismillahTransition() {
           بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
         </motion.p>
 
-        {/* Divider between Bismillah and verse */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.8, ease: easeLuxury }}
-          className="mx-auto my-12 h-px w-24 bg-linear-to-r from-transparent via-gold/40 to-transparent md:my-16 md:w-32"
-        />
-
-        {/* Arabic verse */}
         <motion.p
           dir="rtl"
           lang="ar"
@@ -50,12 +39,11 @@ export function BismillahTransition() {
             delay: reduceMotion ? 0 : 1.0,
             ease: easeLuxury,
           }}
-          className="font-aldhabi text-fluid-2xl leading-loose text-cream/90 md:text-fluid-3xl"
+          className="mt-12 font-aldhabi text-fluid-2xl leading-loose text-cream/90 md:mt-16 md:text-fluid-3xl"
         >
           وَمِنْ اٰيٰتِهٖٓ اَنْ خَلَقَ لَكُمْ مِّنْ اَنْفُسِكُمْ اَزْوَاجًا لِّتَسْكُنُوْٓا اِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَّوَدَّةً وَّرَحْمَةً ۚ اِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّقَوْمٍ يَّتَفَكَّرُوْنَ
         </motion.p>
 
-        {/* English translation — Poppins Regular */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -73,7 +61,6 @@ export function BismillahTransition() {
           thought.&rdquo;
         </motion.p>
 
-        {/* Citation — Poppins Light */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
