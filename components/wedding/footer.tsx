@@ -7,23 +7,23 @@ import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 export function Footer() {
   return (
     <footer className="relative left-1/2 right-1/2 -mx-[50vw] flex min-h-screen w-screen items-center justify-center overflow-hidden">
-      {/* The couple photo — top fades in smoothly, bottom stays fully visible */}
+      {/* The couple photo — only the very top edge fades into the background */}
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: 'url(/images/footer-couple.jpg)',
           maskImage:
-            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 100%)',
+            'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 30%, black 100%)',
           WebkitMaskImage:
-            'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 38%, black 50%, black 100%)',
+            'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 30%, black 100%)',
         }}
       />
 
-      {/* Soft dark overlay so text stays readable (photo still visible) */}
+      {/* Very light overlay only behind text area for readability */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-background/30"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/45 blur-3xl"
       />
 
       {/* Gold ambient glow behind names */}
@@ -61,14 +61,14 @@ export function Footer() {
 
           <motion.p
             variants={fadeUp}
-            className="mt-8 font-mono text-fluid-sm uppercase tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)] md:mt-10 md:tracking-[0.45em]"
+            className="mt-8 font-mono text-fluid-sm uppercase tracking-[0.35em] text-cream/95 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)] md:mt-10 md:tracking-[0.45em]"
           >
             {wedding.date.short}
           </motion.p>
 
           <motion.p
             variants={fadeUp}
-            className="mt-3 font-sans text-fluid-base italic text-cream/85 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)]"
+            className="mt-3 font-sans text-fluid-base italic text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)]"
           >
             {wedding.city}
           </motion.p>
@@ -84,7 +84,7 @@ export function Footer() {
 
           <motion.p
             variants={fadeUp}
-            className="mt-8 font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/70 [text-shadow:0_2px_15px_oklch(0.12_0.012_270/0.95)] md:mt-10"
+            className="mt-8 font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/80 [text-shadow:0_2px_15px_oklch(0.12_0.012_270/0.95)] md:mt-10"
           >
             Made with love · 2026
           </motion.p>
