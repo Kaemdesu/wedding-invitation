@@ -22,7 +22,6 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-// ✨ Kepler Std — for framing text (captions, "The Wedding of", date)
 const kepler = localFont({
   variable: '--font-kepler',
   display: 'swap',
@@ -32,7 +31,6 @@ const kepler = localFont({
   ],
 })
 
-// ✨ Geographica Script — for names
 const geographica = localFont({
   variable: '--font-geographica',
   display: 'swap',
@@ -41,12 +39,23 @@ const geographica = localFont({
   ],
 })
 
-// ✨ Aldhabi — for Arabic text (Bismillah + Ar-Rum 21)
 const aldhabi = localFont({
   variable: '--font-aldhabi',
   display: 'swap',
   src: [
     { path: '../public/fonts/aldhabi.ttf', weight: '400', style: 'normal' },
+  ],
+})
+
+const poppins = localFont({
+  variable: '--font-poppins',
+  display: 'swap',
+  src: [
+    { path: '../public/fonts/poppins/Poppins-Light.ttf', weight: '300', style: 'normal' },
+    { path: '../public/fonts/poppins/Poppins-Regular.ttf', weight: '400', style: 'normal' },
+    { path: '../public/fonts/poppins/Poppins-Medium.ttf', weight: '500', style: 'normal' },
+    { path: '../public/fonts/poppins/Poppins-SemiBold.ttf', weight: '600', style: 'normal' },
+    { path: '../public/fonts/poppins/Poppins-Bold.ttf', weight: '700', style: 'normal' },
   ],
 })
 
@@ -70,7 +79,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${cormorant.variable} ${geistMono.variable} ${kepler.variable} ${geographica.variable} ${aldhabi.variable} bg-background`}
+      className={`${playfair.variable} ${cormorant.variable} ${geistMono.variable} ${kepler.variable} ${geographica.variable} ${aldhabi.variable} ${poppins.variable} bg-background`}
     >
       <body className="font-sans antialiased">
         {children}

@@ -25,7 +25,7 @@ export function BismillahTransition() {
           <span className="block h-px w-12 bg-gradient-to-r from-gold/60 to-transparent md:w-24" />
         </motion.div>
 
-        {/* Bismillah — Aldhabi, large & luminous */}
+        {/* Bismillah */}
         <motion.p
           dir="rtl"
           lang="ar"
@@ -42,7 +42,7 @@ export function BismillahTransition() {
           بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
         </motion.p>
 
-        {/* Divider between Bismillah and verse */}
+        {/* Divider */}
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           whileInView={{ opacity: 1, scaleX: 1 }}
@@ -51,7 +51,7 @@ export function BismillahTransition() {
           className="mx-auto my-12 h-px w-24 bg-gradient-to-r from-transparent via-gold/40 to-transparent md:my-16 md:w-32"
         />
 
-        {/* Arabic verse — Aldhabi, medium */}
+        {/* Arabic verse */}
         <motion.p
           dir="rtl"
           lang="ar"
@@ -68,7 +68,7 @@ export function BismillahTransition() {
           وَمِنْ اٰيٰتِهٖٓ اَنْ خَلَقَ لَكُمْ مِّنْ اَنْفُسِكُمْ اَزْوَاجًا لِّتَسْكُنُوْٓا اِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَّوَدَّةً وَّرَحْمَةً ۚ اِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّقَوْمٍ يَّتَفَكَّرُوْنَ
         </motion.p>
 
-        {/* English translation — Kepler */}
+        {/* English translation — Poppins Regular */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ export function BismillahTransition() {
             delay: reduceMotion ? 0 : 1.6,
             ease: easeLuxury,
           }}
-          className="mx-auto mt-12 max-w-2xl font-kepler text-fluid-base leading-relaxed text-cream/80 md:mt-16 md:text-fluid-lg"
+          className="mx-auto mt-12 max-w-2xl font-poppins font-normal text-fluid-base leading-relaxed text-cream/80 md:mt-16 md:text-fluid-lg"
         >
           &ldquo;And among His signs is that He created for you mates from among
           yourselves, that you may find tranquility in them; and He placed between
@@ -86,13 +86,13 @@ export function BismillahTransition() {
           thought.&rdquo;
         </motion.p>
 
-        {/* Citation — Kepler small */}
+        {/* Citation — Poppins Light */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 2 }}
-          className="mt-4 font-kepler text-fluid-sm tracking-[0.2em] text-gold/85"
+          className="mt-4 font-poppins font-light text-fluid-sm tracking-[0.2em] text-gold/85"
         >
           (QS. Ar-Rum: 21)
         </motion.p>

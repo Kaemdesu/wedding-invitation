@@ -8,6 +8,7 @@ import {
   useMotionValueEvent,
 } from 'framer-motion'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { ErrorBoundary } from './error-boundary'
@@ -32,14 +33,12 @@ export function Hero() {
     else if (latest < 0.95 && pastHero) setPastHero(false)
   })
 
-  // Captions
   const t1Opacity = useTransform(scrollYProgress, [0, 0.06, 0.16, 0.22], [0, 1, 1, 0])
   const t1Y = useTransform(scrollYProgress, [0, 0.22], [30, -30])
 
   const t2Opacity = useTransform(scrollYProgress, [0.24, 0.3, 0.42, 0.48], [0, 1, 1, 0])
   const t2Y = useTransform(scrollYProgress, [0.24, 0.48], [30, -30])
 
-  // Satin roses
   const satinOpacity = useTransform(scrollYProgress, [0.55, 0.75, 0.95], [0, 0.55, 0.7])
   const satinScale = useTransform(scrollYProgress, [0.55, 1], [1.15, 1])
   const darkOverlay = useTransform(scrollYProgress, [0, 0.5, 0.85], [0.65, 0.55, 0.35])
@@ -62,15 +61,15 @@ export function Hero() {
         />
         <div className="absolute inset-0 bg-background/55" />
         <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center safe-x">
-          <p className="font-kepler text-fluid-sm uppercase tracking-[0.4em] text-cream/85">
+          <p className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/85">
             The Wedding of
           </p>
-          <h1 className="mt-6 font-geographica text-fluid-display leading-[0.95] text-gradient-gold">
+          <h1 className="mt-8 overflow-visible pt-4 font-geographica text-fluid-display leading-[1.15] text-gradient-gold">
             <span className="block">{wedding.bride.shortName}</span>
             <span className="my-1 block text-fluid-5xl text-gold/85">&</span>
             <span className="block">{wedding.groom.shortName}</span>
           </h1>
-          <p className="mt-8 font-kepler text-fluid-sm tracking-[0.35em] text-cream/90">
+          <p className="mt-8 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90">
             {wedding.date.short}
           </p>
         </div>
@@ -85,21 +84,18 @@ export function Hero() {
       style={{ height: '320vh' }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Satin roses background */}
         <motion.div
           style={{ opacity: satinOpacity, scale: satinScale }}
           className="pointer-events-none absolute inset-0 gpu"
         >
-          <img
-            src="/images/satin-roses.webp"
-            alt=""
+          <div
             aria-hidden
-            className="h-full w-full object-cover blur-sm"
+            className="h-full w-full bg-cover bg-center blur-sm"
+            style={{ backgroundImage: 'url(/images/satin-roses.webp)' }}
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.18_0.02_270/0.4)_0%,oklch(0.74_0.1_85/0.18)_50%,oklch(0.12_0.012_270/0.7)_100%)]" />
         </motion.div>
 
-        {/* 3D Ring (unmounts past hero) */}
         {!pastHero && (
           <motion.div
             style={{ opacity: ringOpacity }}
@@ -111,59 +107,51 @@ export function Hero() {
           </motion.div>
         )}
 
-        {/* Vignette */}
         <motion.div
           style={{ opacity: darkOverlay }}
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,oklch(0.12_0.012_270/0.85)_100%)]"
         />
 
-        {/* Caption 1 — Kepler upright */}
         <motion.div
           style={{ opacity: t1Opacity, y: t1Y }}
           className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 safe-x"
         >
-          <p className="max-w-2xl text-center font-kepler text-fluid-2xl leading-snug text-cream/95 md:text-fluid-3xl">
+          <p className="max-w-2xl text-center font-poppins font-normal text-fluid-2xl leading-snug text-cream/95 md:text-fluid-3xl">
             For the days that deserve forever,
           </p>
         </motion.div>
 
-        {/* Caption 2 — Kepler upright */}
         <motion.div
           style={{ opacity: t2Opacity, y: t2Y }}
           className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6 safe-x"
         >
-          <p className="max-w-2xl text-center font-kepler text-fluid-2xl leading-snug text-gradient-gold md:text-fluid-3xl">
+          <p className="max-w-2xl text-center font-poppins font-normal text-fluid-2xl leading-snug text-white md:text-fluid-3xl">
             these become our Preserved Chapters
           </p>
         </motion.div>
 
-        {/* Names block — "The Wedding of" + Names + Date */}
         <motion.div
           style={{ opacity: namesOpacity, scale: namesScale }}
           className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center safe-x"
         >
-          {/* "The Wedding of" — Kepler small */}
           <motion.p
             style={{ opacity: revealOpacity, y: revealY }}
-            className="font-kepler text-fluid-sm uppercase tracking-[_20px_oklch(0.12_0.012_270/0.8)] md:text-fluid-base md:tracking-[0.4em]"
+            className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:text-fluid-base"
           >
             The Wedding of
           </motion.p>
 
-          {/* Names — Geographica Script */}
-          <h1 className="mt-6 font-geographica text-fluid-display leading-[0.95] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.85),0_0_80px_oklch(0.12_0.012_270/0.6)] md:mt-8">
+          <h1 className="mt-8 overflow-visible pt-4 font-geographica text-fluid-display leading-[1.15] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.85),0_0_80px_oklch(0.12_0.012_270/0.6)] md:mt-10">
             <span className="block">{wedding.bride.shortName}</span>
             <span className="my-1 block text-fluid-5xl text-gold/85 md:my-2">&</span>
             <span className="block">{wedding.groom.shortName}</span>
           </h1>
 
-          {/* Date — Kepler tracked */}
-          <p className="mt-8 font-kepler text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:mt-12 md:text-fluid-base md:tracking-[0.45em]">
+          <p className="mt-8 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:mt-12 md:text-fluid-base md:tracking-[0.45em]">
             {wedding.date.short}
           </p>
         </motion.div>
 
-        {/* Scroll hint */}
         <motion.div
           style={{ opacity: scrollHint }}
           className="pointer-events-none absolute bottom-8 left-1/2 z-30 -translate-x-1/2 text-center safe-bottom"
@@ -174,7 +162,7 @@ export function Hero() {
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="mx-auto mt-2 h-8 w-px bg-gradient-to-b from-gold/70 to-transparent"
+            className="mx-auto mt-2 h-8 w-px bg-linear-to-b from-gold/70 to-transparent"
           />
         </motion.div>
       </div>

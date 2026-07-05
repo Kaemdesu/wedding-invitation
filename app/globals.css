@@ -11,6 +11,8 @@
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
   --font-kepler: var(--font-kepler), 'Kepler Std', Georgia, serif;
   --font-geographica: var(--font-geographica), 'Geographica Script', 'Great Vibes', cursive;
+  --font-aldhabi: var(--font-aldhabi), 'Aldhabi', 'Traditional Arabic', 'Amiri', serif;
+  --font-poppins: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
@@ -60,7 +62,6 @@
 
 :root {
   color-scheme: dark;
-
   --background: oklch(0.12 0.012 270);
   --foreground: oklch(0.93 0.022 85);
   --card: oklch(0.16 0.014 270);
@@ -79,20 +80,16 @@
   --border: oklch(0.74 0.1 85 / 18%);
   --input: oklch(0.74 0.1 85 / 22%);
   --ring: oklch(0.74 0.1 85 / 55%);
-
   --gold: oklch(0.74 0.1 85);
   --gold-soft: oklch(0.82 0.08 88);
   --amber: oklch(0.78 0.13 70);
   --cream: oklch(0.93 0.022 85);
-
   --chart-1: oklch(0.74 0.1 85);
   --chart-2: oklch(0.78 0.13 70);
   --chart-3: oklch(0.6 0.06 85);
   --chart-4: oklch(0.45 0.04 85);
   --chart-5: oklch(0.3 0.02 270);
-
   --radius: 0.625rem;
-
   --sidebar: oklch(0.16 0.014 270);
   --sidebar-foreground: oklch(0.93 0.022 85);
   --sidebar-primary: oklch(0.74 0.1 85);
@@ -107,7 +104,6 @@
   * {
     @apply border-border outline-ring/50;
   }
-
   html {
     @apply font-sans;
     scroll-behavior: smooth;
@@ -115,23 +111,18 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 👇 Move base color to html so body can be transparent */
     background-color: oklch(0.08 0.010 270);
     color: var(--foreground);
   }
-
   body {
-    /* 👇 Transparent so fixed batik bg shows through */
     background-color: transparent;
     color: var(--foreground);
     overflow-x: hidden;
     padding-bottom: env(safe-area-inset-bottom);
   }
-
   :focus-visible {
     @apply outline-none ring-2 ring-gold/60 ring-offset-2 ring-offset-background;
   }
-
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -148,7 +139,6 @@
   .font-heading {
     font-family: var(--font-heading);
   }
-
   .text-gradient-gold {
     background: linear-gradient(
       120deg,
@@ -160,7 +150,6 @@
     background-clip: text;
     color: transparent;
   }
-
   .bg-gradient-gold {
     background: linear-gradient(
       120deg,
@@ -169,14 +158,11 @@
       oklch(0.7 0.13 68)
     );
   }
-
   .glow-gold {
     box-shadow:
       0 0 0 1px oklch(0.74 0.1 85 / 25%),
       0 0 40px -8px oklch(0.74 0.1 85 / 35%);
   }
-
-  /* Fluid typography — scales from mobile to 4K beautifully */
   .text-fluid-xs {
     font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
   }
@@ -210,15 +196,11 @@
   .text-fluid-display {
     font-size: clamp(3rem, 2rem + 7vw, 9rem);
   }
-
-  /* GPU acceleration helpers */
   .gpu {
     transform: translateZ(0);
     will-change: transform;
     backface-visibility: hidden;
   }
-
-  /* Safe area utilities */
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
@@ -229,14 +211,10 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
-
-  /* Touch-friendly minimum sizing */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
-
-  /* Hide scrollbar but keep functionality */
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -246,31 +224,29 @@
   }
 }
 
-
 @layer utilities {
   .font-heading {
     font-family: var(--font-heading);
   }
-  
-  /* ✨ NEW — Kepler utility, use with `italic` and no font-light */
   .font-kepler {
     font-family: var(--font-kepler);
-    font-weight: 700; /* Kepler Display only comes in Bold */
+    font-weight: 700;
   }
-
-  
+  .font-aldhabi {
+    font-family: var(--font-aldhabi);
+    font-weight: 400;
+  }
   .font-geographica {
     font-family: var(--font-geographica);
     font-weight: 400;
   }
-
-
+  .font-poppins {
+    font-family: var(--font-poppins);
+  }
   .scroll-optimize {
     contain: layout style paint;
     content-visibility: auto;
   }
-
-  /* Smoother momentum scroll on iOS */
   html, body {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
