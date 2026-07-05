@@ -21,65 +21,58 @@ export default function Page() {
       <main className="relative">
         <Hero />
 
-        {/* Atmospheric bridge from hero to batik */}
         <div
           aria-hidden
           className="relative h-48 bg-gradient-to-b from-background via-background/70 to-transparent"
         />
 
-        {/* ✦ Chapter 1 — Bismillah + Ar-Rum 21 (replaces old poetry) */}
-        <BismillahTransition />
+        <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-4 md:px-0">
+          <BismillahTransition />
 
-        <LazySection>
-          <CoupleSection />
-        </LazySection>
+          <LazySection>
+            <CoupleSection />
+          </LazySection>
 
-        {/* ✦ Chapter 2 */}
-        <PoetryTransition lines={wedding.poetry.afterCouple} />
+          <PoetryTransition lines={wedding.poetry.afterCouple} />
 
-        <LazySection>
-          <EventDetails />
-        </LazySection>
+          <LazySection>
+            <EventDetails />
+          </LazySection>
 
-        {/* ✦ Chapter 3 */}
-        <PoetryTransition lines={wedding.poetry.afterEvents} />
+          <PoetryTransition lines={wedding.poetry.afterEvents} />
 
-        <LazySection>
-          <Gallery />
-        </LazySection>
+          <LazySection>
+            <Gallery />
+          </LazySection>
 
-        {/* ✦ Chapter 4 */}
-        <PoetryTransition lines={wedding.poetry.afterGallery} />
+          <PoetryTransition lines={wedding.poetry.afterGallery} />
 
-        <LazySection>
-          <Rsvp />
-        </LazySection>
+          <LazySection>
+            <Rsvp />
+          </LazySection>
 
-        {/* ✦ Chapter 5 */}
-        <PoetryTransition lines={wedding.poetry.afterRsvp} />
+          <PoetryTransition lines={wedding.poetry.afterRsvp} />
 
-        <LazySection>
-          <WishesWall />
-        </LazySection>
+          <LazySection>
+            <WishesWall />
+          </LazySection>
 
-        {/* ✦ Chapter 6 */}
-        <PoetryTransition lines={wedding.poetry.afterWishes} />
+          <PoetryTransition lines={wedding.poetry.afterWishes} />
 
-        <LazySection>
-          <GiftRegistry />
-        </LazySection>
+          <LazySection>
+            <GiftRegistry />
+          </LazySection>
 
-        {/* ✦ Chapter 7 */}
-        <PoetryTransition lines={wedding.poetry.afterGifts} />
+          <PoetryTransition lines={wedding.poetry.afterGifts} />
 
-        <LazySection>
-          <Countdown />
-        </LazySection>
+          <LazySection>
+            <Countdown />
+          </LazySection>
 
-        {/* ✦ Chapter 8 — final whisper before footer */}
-        <PoetryTransition lines={wedding.poetry.afterCountdown} />
+          <PoetryTransition lines={wedding.poetry.afterCountdown} />
 
-        <Footer />
+          <Footer />
+        </div>
       </main>
       <MusicPlayer />
     </>
