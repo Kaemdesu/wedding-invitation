@@ -8,7 +8,6 @@ import {
   useMotionValueEvent,
 } from 'framer-motion'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { ErrorBoundary } from './error-boundary'
@@ -39,9 +38,9 @@ export function Hero() {
   const t2Opacity = useTransform(scrollYProgress, [0.24, 0.3, 0.42, 0.48], [0, 1, 1, 0])
   const t2Y = useTransform(scrollYProgress, [0.24, 0.48], [30, -30])
 
-  const satinOpacity = useTransform(scrollYProgress, [0.55, 0.75, 0.95], [0, 0.55, 0.7])
+  const satinOpacity = useTransform(scrollYProgress, [0.55, 0.75, 0.95], [0, 0.55, 0.75])
   const satinScale = useTransform(scrollYProgress, [0.55, 1], [1.15, 1])
-  const darkOverlay = useTransform(scrollYProgress, [0, 0.5, 0.85], [0.65, 0.55, 0.35])
+  const darkOverlay = useTransform(scrollYProgress, [0, 0.5, 0.85], [0.65, 0.55, 0.55])
 
   const revealOpacity = useTransform(scrollYProgress, [0.7, 0.8], [0, 1])
   const revealY = useTransform(scrollYProgress, [0.7, 0.92], [40, 0])
@@ -49,8 +48,8 @@ export function Hero() {
   const namesOpacity = useTransform(scrollYProgress, [0.82, 0.92], [0, 1])
   const namesScale = useTransform(scrollYProgress, [0.82, 1], [0.92, 1])
 
-  const ringOpacity = useTransform(scrollYProgress, [0, 0.55, 0.92], [1, 1, 0.45])
-  const scrollHint = useTransform(scrollYProgress, [0, 0.08], [1, 0])
+  const ringOpacity = useTransform(scrollYProgress, [0, 0.55, 0.82, 0.92], [1, 1, 0.35, 0])
+  const scrollHint = useTransform(scrollYProgress, [0, 0.05, 0.6], [1, 0, 0])
 
   if (reduceMotion) {
     return (
@@ -132,22 +131,22 @@ export function Hero() {
 
         <motion.div
           style={{ opacity: namesOpacity, scale: namesScale }}
-          className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center safe-x"
+          className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pb-24 text-center safe-x md:pb-16"
         >
           <motion.p
             style={{ opacity: revealOpacity, y: revealY }}
-            className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:text-fluid-base"
+            className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.9)] md:text-fluid-base"
           >
             The Wedding of
           </motion.p>
 
-          <h1 className="mt-8 overflow-visible pt-4 font-geographica text-fluid-display leading-[1.15] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.85),0_0_80px_oklch(0.12_0.012_270/0.6)] md:mt-10">
+          <h1 className="mt-6 overflow-visible pt-4 font-geographica text-fluid-display leading-[1.15] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-8">
             <span className="block">{wedding.bride.shortName}</span>
-            <span className="my-1 block text-fluid-5xl text-gold/85 md:my-2">&</span>
+            <span className="my-0 block text-fluid-5xl text-gold/85 md:my-1">&</span>
             <span className="block">{wedding.groom.shortName}</span>
           </h1>
 
-          <p className="mt-8 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.8)] md:mt-12 md:text-fluid-base md:tracking-[0.45em]">
+          <p className="mt-6 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.9)] md:mt-8 md:text-fluid-base md:tracking-[0.45em]">
             {wedding.date.short}
           </p>
         </motion.div>
