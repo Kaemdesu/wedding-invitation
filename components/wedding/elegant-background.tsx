@@ -6,14 +6,14 @@ export function ElegantBackground() {
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      {/* 1. Floral wallpaper — full visibility */}
+      {/* 1. Floral wallpaper */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(/images/wallpaper.jpg)' }}
       />
 
-      {/* 2. Subtle dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/30" />
+      {/* 2. Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* 3. Soft gold ambient glows for warmth */}
       <div className="absolute -left-[20%] top-[8%] h-[700px] w-[700px] rounded-full bg-gold/[0.06] blur-[140px]" />
@@ -21,7 +21,7 @@ export function ElegantBackground() {
       <div className="absolute bottom-[-10%] left-[28%] h-[600px] w-[600px] rounded-full bg-gold-soft/[0.05] blur-[150px]" />
 
       {/* 4. Edge vignette for depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,oklch(0.06_0.010_270/0.5)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,oklch(0.04_0.008_270/0.65)_100%)]" />
     </div>
   )
 }
