@@ -75,31 +75,59 @@ export default function AdminPage() {
   const [modalError, setModalError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  const loadAll = useCallback(async (pinToUse: string) => {
+ const loadAll = useCallback(async (pinToUse: string) => {
     setLoading(true)
+    setLoginError('')
     try {
-      const [rsvpRes, wishRes, giftRes] = await Promise.all([
-        fetch('/api/admin/rsvps', { headers: { 'x-admin-pin': pinToUse } }),
-        fetch('/api/admin/wishes', { headers: { 'x-admin-pin': pinToUse } }),
-        fetch('/api/admin/gifts', { headers: { 'x-admin-pin': pinToUse } }),
-      ])
-      if (rsvpRes.status === 401 || wishRes.status === 401 || giftRes.status === 401) {
+      // First, verify PIN with gifts endpoint (always exists)
+      const authCheck = await fetch('/api/admin/gifts', { headers: { 'x-admin-pin': pinToUse } })
+      if (authCheck.status === 401) {
         setLoginError('Invalid PIN')
         sessionStorage.removeItem(PIN_STORAGE_KEY)
         setAuthed(false)
         setLoading(false)
         return
       }
-      const rsvpData = await rsvpRes.json()
-      const wishData = await wishRes.json()
-      const giftData = await giftRes.json()
-      setRsvps(rsvpData.rsvps || [])
-      setWishes(wishData.wishes || [])
-      setGifts(giftData.gifts || [])
+      if (!authCheck.ok) {
+        setLoginError('Server error loading gifts')
+        setLoading(false)
+        return
+      }
+
+      // PIN valid — load all endpoints independently
+      const [rsvpRes, wishRes, giftRes] = await Promise.allSettled([
+        fetch('/api/admin/rsvps', { headers: { 'x-admin-pin': pinToUse } }),
+        fetch('/api/admin/wishes', { headers: { 'x-admin-pin': pinToUse } }),
+        Promise.resolve(authCheck),
+      ])
+
+      if (rsvpRes.status === 'fulfilled' && rsvpRes.value.ok) {
+        const data = await rsvpRes.value.json()
+        setRsvps(data.rsvps || [])
+      } else {
+        setRsvps([])
+        console.warn('RSVPs endpoint failed — deploy /api/admin/rsvps route')
+      }
+
+      if (wishRes.status === 'fulfilled' && wishRes.value.ok) {
+        const data = await wishRes.value.json()
+        setWishes(data.wishes || [])
+      } else {
+        setWishes([])
+      }
+
+      if (giftRes.status === 'fulfilled' && giftRes.value.ok) {
+        const data = await giftRes.value.json()
+        setGifts(data.gifts || [])
+      } else {
+        setGifts([])
+      }
+
       setAuthed(true)
       sessionStorage.setItem(PIN_STORAGE_KEY, pinToUse)
-    } catch {
-      setLoginError('Network error')
+    } catch (err) {
+      console.error('Admin load error:', err)
+      setLoginError('Network error — check console')
     }
     setLoading(false)
   }, [])
