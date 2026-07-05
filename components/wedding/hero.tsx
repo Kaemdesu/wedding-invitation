@@ -63,12 +63,12 @@ export function Hero() {
           <p className="font-poppins font-normal text-fluid-sm uppercase tracking-[0.4em] text-cream/85">
             The Wedding of
           </p>
-          <h1 className="mt-6 flex flex-col items-center overflow-visible font-geographica text-gradient-gold">
-            <span className="block text-fluid-display leading-none pt-6">{wedding.bride.shortName}</span>
-            <span className="block text-fluid-5xl leading-none text-gold/85 -mt-4">&amp;</span>
-            <span className="block text-fluid-display leading-none pb-6">{wedding.groom.shortName}</span>
+          <h1 className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 overflow-visible py-4 font-geographica text-fluid-6xl leading-none text-gradient-gold md:text-fluid-display">
+            <span>{wedding.bride.shortName}</span>
+            <span className="text-gold/85">&amp;</span>
+            <span>{wedding.groom.shortName}</span>
           </h1>
-          <p className="mt-6 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90">
+          <p className="mt-8 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90">
             {wedding.date.short}
           </p>
         </div>
@@ -140,13 +140,13 @@ export function Hero() {
             The Wedding of
           </motion.p>
 
-          <h1 className="mt-4 flex flex-col items-center overflow-visible font-geographica text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-6">
-            <span className="block text-fluid-display leading-none pt-6 md:pt-8">{wedding.bride.shortName}</span>
-            <span className="block text-fluid-5xl leading-none text-gold/85 -mt-4 md:-mt-6">&amp;</span>
-            <span className="block text-fluid-display leading-none pb-6 md:pb-8">{wedding.groom.shortName}</span>
+          <h1 className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 overflow-visible py-4 font-geographica text-fluid-6xl leading-none text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.85)] md:mt-8 md:gap-x-10 md:text-fluid-display">
+            <span>{wedding.bride.shortName}</span>
+            <span className="text-gold/85">&amp;</span>
+            <span>{wedding.groom.shortName}</span>
           </h1>
 
-          <p className="mt-4 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.9)] md:mt-6 md:text-fluid-base md:tracking-[0.45em]">
+          <p className="mt-6 font-poppins font-normal text-fluid-sm tracking-[0.35em] text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.9)] md:mt-8 md:text-fluid-base md:tracking-[0.45em]">
             {wedding.date.short}
           </p>
         </motion.div>
