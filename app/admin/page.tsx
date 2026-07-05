@@ -6,13 +6,14 @@ import {
   LogOut, RefreshCw, Lock, Check, RotateCcw, ShoppingBag,
   Gift as GiftIcon, Plus, Pencil, Trash2, Eye, EyeOff, X,
   Pin, PinOff, Users, MessageCircle, LayoutDashboard, Search,
-  UserCheck, UserX, Sparkles,
+  UserCheck, UserX, Sparkles, Settings as SettingsIcon, Save,
+  Package, MessageSquare,
 } from 'lucide-react'
-import type { Gift, GiftStatus, ShopName, Wish, Rsvp } from '@/lib/supabase'
+import type { Gift, GiftStatus, ShopName, Wish, Rsvp, SiteSettings } from '@/lib/supabase'
 
 const PIN_STORAGE_KEY = 'wedding-admin-pin'
 
-type Tab = 'overview' | 'rsvps' | 'wishes' | 'gifts'
+type Tab = 'overview' | 'rsvps' | 'wishes' | 'gifts' | 'settings'
 
 function formatPrice(idr: number) {
   return 'Rp ' + idr.toLocaleString('id-ID')
@@ -63,6 +64,7 @@ export default function AdminPage() {
   const [rsvps, setRsvps] = useState<Rsvp[]>([])
   const [wishes, setWishes] = useState<Wish[]>([])
   const [gifts, setGifts] = useState<Gift[]>([])
+  const [settings, setSettings] = useState<SiteSettings | null>(null)
 
   const [rsvpSearch, setRsvpSearch] = useState('')
   const [wishSearch, setWishSearch] = useState('')
@@ -75,11 +77,14 @@ export default function AdminPage() {
   const [modalError, setModalError] = useState('')
   const [saving, setSaving] = useState(false)
 
- const loadAll = useCallback(async (pinToUse: string) => {
+  const [settingsDraft, setSettingsDraft] = useState<SiteSettings | null>(null)
+  const [settingsSaving, setSettingsSaving] = useState(false)
+  const [settingsSaved, setSettingsSaved] = useState(false)
+
+  const loadAll = useCallback(async (pinToUse: string) => {
     setLoading(true)
     setLoginError('')
     try {
-      // First, verify PIN with gifts endpoint (always exists)
       const authCheck = await fetch('/api/admin/gifts', { headers: { 'x-admin-pin': pinToUse } })
       if (authCheck.status === 401) {
         setLoginError('Invalid PIN')
@@ -94,11 +99,11 @@ export default function AdminPage() {
         return
       }
 
-      // PIN valid — load all endpoints independently
-      const [rsvpRes, wishRes, giftRes] = await Promise.allSettled([
+      const [rsvpRes, wishRes, giftRes, settingsRes] = await Promise.allSettled([
         fetch('/api/admin/rsvps', { headers: { 'x-admin-pin': pinToUse } }),
         fetch('/api/admin/wishes', { headers: { 'x-admin-pin': pinToUse } }),
         Promise.resolve(authCheck),
+        fetch('/api/admin/settings', { headers: { 'x-admin-pin': pinToUse } }),
       ])
 
       if (rsvpRes.status === 'fulfilled' && rsvpRes.value.ok) {
@@ -106,7 +111,6 @@ export default function AdminPage() {
         setRsvps(data.rsvps || [])
       } else {
         setRsvps([])
-        console.warn('RSVPs endpoint failed — deploy /api/admin/rsvps route')
       }
 
       if (wishRes.status === 'fulfilled' && wishRes.value.ok) {
@@ -121,6 +125,12 @@ export default function AdminPage() {
         setGifts(data.gifts || [])
       } else {
         setGifts([])
+      }
+
+      if (settingsRes.status === 'fulfilled' && settingsRes.value.ok) {
+        const data = await settingsRes.value.json()
+        setSettings(data.settings || null)
+        setSettingsDraft(data.settings || null)
       }
 
       setAuthed(true)
@@ -152,6 +162,8 @@ export default function AdminPage() {
     setRsvps([])
     setWishes([])
     setGifts([])
+    setSettings(null)
+    setSettingsDraft(null)
   }
 
   const deleteRsvp = useCallback(async (rsvp: Rsvp) => {
@@ -320,6 +332,35 @@ export default function AdminPage() {
     setSaving(false)
   }
 
+  const saveSettings = async () => {
+    if (!settingsDraft) return
+    setSettingsSaving(true)
+    setSettingsSaved(false)
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pin': pin },
+        body: JSON.stringify({
+          delivery_recipient: settingsDraft.delivery_recipient,
+          delivery_phone: settingsDraft.delivery_phone,
+          delivery_address: settingsDraft.delivery_address,
+          delivery_notes: settingsDraft.delivery_notes,
+          bca_account_number: settingsDraft.bca_account_number,
+          bca_account_name: settingsDraft.bca_account_name,
+        }),
+      })
+      if (!res.ok) throw new Error('Save failed')
+      const data = await res.json()
+      setSettings(data.settings)
+      setSettingsDraft(data.settings)
+      setSettingsSaved(true)
+      setTimeout(() => setSettingsSaved(false), 3000)
+    } catch {
+      alert('Failed to save settings')
+    }
+    setSettingsSaving(false)
+  }
+
   const stats = useMemo(() => ({
     rsvpTotal: rsvps.length,
     rsvpAccept: rsvps.filter((r) => r.attendance === 'accept').length,
@@ -411,6 +452,7 @@ export default function AdminPage() {
     { id: 'rsvps', label: 'RSVPs', icon: Users, count: stats.rsvpTotal },
     { id: 'wishes', label: 'Wishes', icon: MessageCircle, count: stats.wishTotal },
     { id: 'gifts', label: 'Gifts', icon: GiftIcon, count: stats.giftTotal },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon },
   ]
 
   return (
@@ -544,6 +586,13 @@ export default function AdminPage() {
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add New Gift
+              </button>
+              <button
+                onClick={() => setTab('settings')}
+                className="inline-flex items-center gap-2 rounded-lg border border-gold/25 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cream/80 transition hover:border-gold/50 hover:text-cream"
+              >
+                <Package className="h-3.5 w-3.5" />
+                Delivery Address
               </button>
               <button
                 onClick={() => setTab('rsvps')}
@@ -783,13 +832,21 @@ export default function AdminPage() {
                       {gift.reserved_by_name && (
                         <div className="mt-3 rounded-lg border border-gold/15 bg-background/30 p-3 text-sm">
                           <p className="text-cream/85">
-                            <span className="font-semibold text-gold">Reserved by:</span> {gift.reserved_by_name}
+                            <span className="font-semibold text-gold">Purchased by:</span> {gift.reserved_by_name}
                           </p>
                           {gift.reserved_by_email && (
                             <p className="mt-1 text-cream/65">{gift.reserved_by_email}</p>
                           )}
+                          {gift.purchased_message && (
+                            <div className="mt-2 flex items-start gap-2 rounded border border-gold/15 bg-gold/5 p-2">
+                              <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold/70" />
+                              <p className="font-sans text-sm italic text-cream/80">
+                                &ldquo;{gift.purchased_message}&rdquo;
+                              </p>
+                            </div>
+                          )}
                           {gift.reserved_at && (
-                            <p className="mt-1 font-mono text-xs text-cream/50">{timeAgoFull(gift.reserved_at)}</p>
+                            <p className="mt-2 font-mono text-xs text-cream/50">{timeAgoFull(gift.reserved_at)}</p>
                           )}
                         </div>
                       )}
@@ -858,6 +915,155 @@ export default function AdminPage() {
               ))
             )}
           </div>
+        </div>
+      )}
+
+      {tab === 'settings' && (
+        <div className="mx-auto max-w-3xl">
+          {!settingsDraft ? (
+            <p className="py-12 text-center font-sans text-cream/60">Loading settings...</p>
+          ) : (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-gold/20 bg-card/30 p-6 backdrop-blur-sm md:p-8">
+                <div className="mb-5 flex items-center gap-3">
+                  <Package className="h-5 w-5 text-gold" />
+                  <h2 className="font-heading text-xl font-light italic text-gradient-gold">
+                    Delivery Address
+                  </h2>
+                </div>
+                <p className="mb-5 font-sans text-sm text-cream/70">
+                  Where guests should ship gifts after purchasing.
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Recipient Name
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsDraft.delivery_recipient}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, delivery_recipient: e.target.value })}
+                      placeholder="Kelvin Muliawan"
+                      className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsDraft.delivery_phone}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, delivery_phone: e.target.value })}
+                      placeholder="+62 812-3456-7890"
+                      className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Full Address
+                    </label>
+                    <textarea
+                      value={settingsDraft.delivery_address}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, delivery_address: e.target.value })}
+                      rows={4}
+                      placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos"
+                      className="w-full resize-none rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Additional Notes (optional)
+                    </label>
+                    <textarea
+                      value={settingsDraft.delivery_notes}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, delivery_notes: e.target.value })}
+                      rows={2}
+                      placeholder="e.g., Rumah bercat putih di sebelah minimarket"
+                      className="w-full resize-none rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-gold/20 bg-card/30 p-6 backdrop-blur-sm md:p-8">
+                <div className="mb-5 flex items-center gap-3">
+                  <GiftIcon className="h-5 w-5 text-gold" />
+                  <h2 className="font-heading text-xl font-light italic text-gradient-gold">
+                    Bank Account (Monetary Gifts)
+                  </h2>
+                </div>
+                <p className="mb-5 font-sans text-sm text-cream/70">
+                  Displayed on the gift registry for guests who prefer monetary gifts.
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      BCA Account Number
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsDraft.bca_account_number}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bca_account_number: e.target.value })}
+                      placeholder="5215143209"
+                      className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-mono text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Account Holder Name
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsDraft.bca_account_name}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bca_account_name: e.target.value })}
+                      placeholder="Kelvin Muliawan"
+                      className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={saveSettings}
+                  disabled={settingsSaving}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-gold px-6 py-3 font-mono text-xs font-semibold uppercase tracking-[0.25em] text-background transition disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Save className="h-4 w-4" />
+                  {settingsSaving ? 'Saving...' : 'Save Settings'}
+                </button>
+                {settingsSaved && (
+                  <motion.span
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-emerald-300"
+                  >
+                    <Check className="h-3.5 w-3.5" />
+                    Saved
+                  </motion.span>
+                )}
+                {settings && settingsDraft && (
+                  JSON.stringify(settings) !== JSON.stringify(settingsDraft)
+                ) && (
+                  <button
+                    onClick={() => setSettingsDraft(settings)}
+                    disabled={settingsSaving}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-cream/20 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cream/70 transition hover:border-cream/40 hover:text-cream"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
