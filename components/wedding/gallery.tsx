@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { staggerFast, fadeUp, viewportDefaults } from '@/lib/motion'
 
 const fallbackImages = [
@@ -34,7 +33,6 @@ export function Gallery() {
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
       <SectionHeading subtitle="Memories" title="Moments to remember" />
-
       <motion.div
         variants={staggerFast}
         initial="hidden"
@@ -48,28 +46,15 @@ export function Gallery() {
             variants={fadeUp}
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className={`group relative overflow-hidden rounded-xl border border-gold/15 ${spans[i]}`}
+            className={'group relative overflow-hidden rounded-xl border border-gold/15 ' + spans[i]}
           >
-            <img
-              src={src}
-              alt={`Wedding moment ${i + 1}`}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 gpu"
-              onError={(e) => {
-                const target = e.currentTarget
-                if (!target.dataset.fallback) {
-                  target.dataset.fallback = 'true'
-                  target.src = fallbackImages[i] || '/placeholder.svg'
-                }
-              }}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-background/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div
+              role="img"
+              aria-label={'Wedding moment ' + (i + 1)}
+              className="arent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
           </motion.div>
         ))}
       </motion.div>
-
-      <Divider />
     </section>
   )
 }

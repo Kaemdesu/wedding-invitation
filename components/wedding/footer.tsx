@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import { wedding } from '@/lib/wedding-config'
-import { Divider } from './divider'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 export function Footer() {
@@ -38,11 +37,9 @@ export function Footer() {
           {wedding.city}
         </motion.p>
 
-        <Divider />
-
         <motion.p
           variants={fadeUp}
-          className="font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/50"
+          className="mt-10 font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/50 md:mt-14"
         >
           Made with love · 2026
         </motion.p>

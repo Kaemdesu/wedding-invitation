@@ -5,7 +5,6 @@ import { Check, Heart, X } from 'lucide-react'
 import { useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 type Attendance = 'accept' | 'decline'
@@ -201,8 +200,6 @@ export function Rsvp() {
           )}
         </AnimatePresence>
       </motion.div>
-
-      <Divider />
     </section>
   )
 }

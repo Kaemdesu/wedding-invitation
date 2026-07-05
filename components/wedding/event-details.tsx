@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { Clock, MapPin } from 'lucide-react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { VenueMap } from './venue-map'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
@@ -26,7 +25,7 @@ function EventCard({
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="group relative overflow-hidden rounded-2xl border border-gold/20 bg-card/40 p-7 backdrop-blur-sm md:p-10"
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold/0 via-gold/0 to-gold/0 transition-all duration-500 group-hover:from-gold/[0.04] group-hover:to-gold/[0.08]" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-gold/0 via-gold/0 to-gold/0 transition-all duration-500 group-hover:from-gold/[0.04] group-hover:to-gold/[0.08]" />
 
       <p className="font-mono text-fluid-xs uppercase tracking-[0.35em] text-gold/80">
         {label}
@@ -86,8 +85,6 @@ export function EventDetails() {
       </motion.div>
 
       <VenueMap />
-
-      <Divider />
     </section>
   )
 }

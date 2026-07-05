@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { fadeUp, staggerContainer, viewportDefaults, easeLuxury } from '@/lib/motion'
 
 type TimeLeft = {
@@ -15,11 +14,9 @@ type TimeLeft = {
   total: number
 }
 
-/** Calculate time difference between now and target */
 function getTimeLeft(target: Date): TimeLeft {
   const total = target.getTime() - Date.now()
   if (total <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, total: 0 }
-
   return {
     days: Math.floor(total / (1000 * 60 * 60 * 24)),
     hours: Math.floor((total / (1000 * 60 * 60)) % 24),
@@ -49,10 +46,7 @@ function TimeUnit({
       className="flex flex-col items-center"
     >
       <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-gold/25 bg-card/30 backdrop-blur-sm sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32">
-        {/* Subtle gold glow */}
-        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-gold/10 to-transparent" />
-
-        {/* The number itself — animated key change for smoother updates */}
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-linear-to-br from-gold/10 to-transparent" />
         <motion.span
           key={value}
           initial={{ opacity: 0, y: -8 }}
@@ -71,7 +65,7 @@ function TimeUnit({
 }
 
 export function Countdown() {
-  const target = new Date(`${wedding.date.iso}T09:00:00+07:00`) // 09:00 WIB akad
+  const target = new Date(`${wedding.date.iso}T09:00:00+07:00`)
   const reduceMotion = useReducedMotion()
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(target))
@@ -86,7 +80,6 @@ export function Countdown() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // SSR fallback (no flash of wrong numbers)
   if (!mounted) {
     return (
       <section className="relative px-6 py-24 safe-x md:py-32">
@@ -103,12 +96,10 @@ export function Countdown() {
             ))}
           </div>
         </div>
-        <Divider />
       </section>
     )
   }
 
-  // Wedding day arrived 🎉
   if (timeLeft.total <= 0) {
     return (
       <section className="relative px-6 py-24 safe-x md:py-32">
@@ -138,7 +129,6 @@ export function Countdown() {
             Thank you for being part of our story. ✨
           </p>
         </motion.div>
-        <Divider />
       </section>
     )
   }
@@ -154,7 +144,6 @@ export function Countdown() {
         viewport={viewportDefaults}
         className="mx-auto max-w-3xl"
       >
-        {/* The countdown grid */}
         <div className="grid grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           <TimeUnit value={timeLeft.days} label="Days" delay={0} />
           <TimeUnit value={timeLeft.hours} label="Hours" delay={0.08} />
@@ -162,7 +151,6 @@ export function Countdown() {
           <TimeUnit value={timeLeft.seconds} label="Seconds" delay={0.24} />
         </div>
 
-        {/* Wedding date footnote */}
         <motion.p
           variants={fadeUp}
           className="mt-10 text-center font-heading text-fluid-lg font-light italic text-cream/85 md:mt-14 md:text-fluid-xl"
@@ -179,8 +167,6 @@ export function Countdown() {
           ✦ Until forever ✦
         </motion.p>
       </motion.div>
-
-      <Divider />
     </section>
   )
 }

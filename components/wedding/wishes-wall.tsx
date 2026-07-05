@@ -5,15 +5,13 @@ import { Heart, Pin, Sparkles, Send, ChevronLeft, ChevronRight } from 'lucide-re
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { viewportDefaults, easeLuxury } from '@/lib/motion'
 import type { PublicWish } from '@/lib/supabase'
 
-const PER_PAGE = 6 // wishes shown per "page" in carousel
-const AUTO_ROTATE_MS = 7000 // how often pages rotate (7s)
+const PER_PAGE = 6
+const AUTO_ROTATE_MS = 7000
 
-/** Browser-side cooldown (per device) */
-const BROWSER_COOLDOWN_MS = 2 * 60 * 1000 // 2 minutes
+const BROWSER_COOLDOWN_MS = 2 * 60 * 1000
 const COOLDOWN_KEY = 'wishes-last-sent'
 
 function timeAgo(iso: string): string {
@@ -66,12 +64,15 @@ function WishCard({ wish }: { wish: PublicWish }) {
           </span>
         </div>
       )}
+
       <div className="absolute -top-2 right-3 font-heading text-fluid-3xl font-light italic leading-none text-gold/15">
         ❝
       </div>
+
       <p className="relative font-sans text-fluid-base leading-relaxed text-cream/90 [overflow-wrap:break-word]">
         {wish.message}
       </p>
+
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-gold/10 pt-3">
         <div className="flex min-w-0 items-center gap-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-gold font-mono text-xs font-semibold text-background">
@@ -93,16 +94,15 @@ export function WishesWall() {
   const [wishes, setWishes] = useState<PublicWish[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
+
   const [page, setPage] = useState(0)
 
-  // Form state
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  /** Fetch all wishes once (cap at 100 for performance) */
   const loadAll = useCallback(async () => {
     try {
       const res = await fetch('/api/wishes?limit=100&offset=0', { cache: 'no-store' })
@@ -110,7 +110,7 @@ export function WishesWall() {
       setWishes(data.wishes || [])
       setTotal(data.total || 0)
     } catch {
-      // Silent fail
+      // silent
     } finally {
       setLoading(false)
     }
@@ -120,7 +120,6 @@ export function WishesWall() {
     loadAll()
   }, [loadAll])
 
-  /** Real-time subscription */
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -178,7 +177,6 @@ export function WishesWall() {
     }
   }, [])
 
-  // Sort: pinned first, then newest
   const sortedWishes = useMemo(() => {
     return [...wishes].sort((a, b) => {
       if (a.is_pinned && !b.is_pinned) return -1
@@ -194,7 +192,6 @@ export function WishesWall() {
     safePage * PER_PAGE + PER_PAGE
   )
 
-  /** Auto-rotate (always on) */
   useEffect(() => {
     if (totalPages <= 1) return
     const interval = setInterval(() => {
@@ -203,7 +200,6 @@ export function WishesWall() {
     return () => clearInterval(interval)
   }, [totalPages])
 
-  // Reset to page 0 if total pages shrinks
   useEffect(() => {
     if (page >= totalPages) setPage(0)
   }, [page, totalPages])
@@ -215,7 +211,6 @@ export function WishesWall() {
     e.preventDefault()
     if (submitting) return
 
-    // Browser cooldown check (instant feedback, no server round-trip)
     const remaining = getCooldownRemaining()
     if (remaining > 0) {
       const secs = Math.ceil(remaining / 1000)
@@ -233,7 +228,6 @@ export function WishesWall() {
     setSubmitting(true)
     setStatus('idle')
     setErrorMsg('')
-
     try {
       const res = await fetch('/api/wishes', {
         method: 'POST',
@@ -301,7 +295,6 @@ export function WishesWall() {
           </motion.p>
         ) : (
           <div>
-            {/* Carousel */}
             <div className="relative min-h-[500px] md:min-h-[420px]">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -319,10 +312,8 @@ export function WishesWall() {
               </AnimatePresence>
             </div>
 
-            {/* Controls */}
             {totalPages > 1 && (
               <div className="mt-8 flex flex-col items-center gap-4 md:mt-10">
-                {/* Page dots */}
                 <div className="flex items-center gap-2">
                   {Array.from({ length: totalPages }).map((_, i) => (
                     <button
@@ -338,7 +329,6 @@ export function WishesWall() {
                   ))}
                 </div>
 
-                {/* Navigation arrows */}
                 <div className="flex items-center gap-3">
                   <button
                     onClick={goPrev}
@@ -360,7 +350,6 @@ export function WishesWall() {
           </div>
         )}
 
-        {/* Stats line */}
         {!loading && sortedWishes.length > 0 && (
           <p className="mt-6 text-center font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/50 md:mt-8">
             <Heart className="mr-1 inline h-3 w-3 text-gold/70" /> {total}{' '}
@@ -368,7 +357,6 @@ export function WishesWall() {
           </p>
         )}
 
-        {/* Submission form */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -459,8 +447,6 @@ export function WishesWall() {
           )}
         </motion.div>
       </div>
-
-      <Divider />
     </section>
   )
 }

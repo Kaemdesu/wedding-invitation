@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, Check, Copy, X, CreditCard, ExternalLink, Sparkles } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react'
 import { SectionHeading } from './section-heading'
-import { Divider } from './divider'
 import { fadeUp, staggerFast, viewportDefaults } from '@/lib/motion'
 import type { PublicGift, ShopName } from '@/lib/supabase'
 
@@ -23,7 +22,7 @@ const SHOP_COLORS: Record<ShopName, string> = {
 }
 
 function formatPrice(idr: number) {
-  return `Rp ${idr.toLocaleString('id-ID')}`
+  return 'Rp ' + idr.toLocaleString('id-ID')
 }
 
 export function GiftRegistry() {
@@ -36,14 +35,13 @@ export function GiftRegistry() {
   const [reserveError, setReserveError] = useState('')
   const [copied, setCopied] = useState(false)
 
-  /** Fetch gifts from API */
   const loadGifts = useCallback(async () => {
     try {
       const res = await fetch('/api/gifts', { cache: 'no-store' })
       const data = await res.json()
       setGifts(data.gifts || [])
     } catch {
-      // Silent fail — user sees empty state
+      // silent
     } finally {
       setLoading(false)
     }
@@ -53,7 +51,6 @@ export function GiftRegistry() {
     loadGifts()
   }, [loadGifts])
 
-  /** Lock body scroll while modal is open */
   useEffect(() => {
     if (modalGift) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
@@ -66,7 +63,6 @@ export function GiftRegistry() {
     if (!modalGift || !guestName.trim()) return
     setSubmitting(true)
     setReserveError('')
-
     try {
       const res = await fetch('/api/gifts', {
         method: 'POST',
@@ -77,15 +73,11 @@ export function GiftRegistry() {
           guestEmail: guestEmail.trim() || undefined,
         }),
       })
-
       const data = await res.json()
-
       if (!res.ok) {
         setReserveError(data.error || 'Failed to reserve gift. Please try again.')
-        // Refresh gifts in case someone else just took it
         await loadGifts()
       } else {
-        // Success — refresh and close
         await loadGifts()
         setModalGift(null)
         setGuestName('')
@@ -103,10 +95,16 @@ export function GiftRegistry() {
     setTimeout(() => setCopied(false), 2000)
   }, [])
 
+  const closeModal = () => {
+    setModalGift(null)
+    setGuestName('')
+    setGuestEmail('')
+    setReserveError('')
+  }
+
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
       <SectionHeading subtitle="Gift Registry" title="With love & gratitude" />
-
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -118,7 +116,6 @@ export function GiftRegistry() {
         gift, here are some items we would love.
       </motion.p>
 
-      {/* Gift Cards Grid */}
       {loading ? (
         <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -130,7 +127,7 @@ export function GiftRegistry() {
         </div>
       ) : gifts.length === 0 ? (
         <p className="mx-auto max-w-md text-center font-sans text-fluid-base italic text-cream/60">
-          Gift registry coming soon. ✨
+          Gift registry coming soon.
         </p>
       ) : (
         <motion.div
@@ -142,8 +139,8 @@ export function GiftRegistry() {
         >
           {gifts.map((gift) => {
             const isAvailable = gift.status === 'available'
-            const shopName = gift.shop_name || 'other'
-
+            const shopName: ShopName = gift.shop_name || 'other'
+            const imgUrl = gift.image_url || '/placeholder.svg'
             return (
               <motion.div
                 key={gift.id}
@@ -152,73 +149,56 @@ export function GiftRegistry() {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-gold/20 bg-card/40 backdrop-blur-sm"
               >
-            <div className="relative aspect-[4/3] overflow-hidden">
-  <img
-    src={gift.image_url || '/placeholder.svg'}
-    alt={gift.name}
-    loading="lazy"
-    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 gpu"
-  />
-
-                  {/* Status badge */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <div
+                    role="img"
+                    aria-label={gift.name}
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 gpu"
+                    style={{ backgroundImage: 'url(' + imgUrl + ')' }}
+                  />
                   {!isAvailable && (
                     <div className="absolute right-3 top-3 rounded-full border border-gold/40 bg-background/85 px-3 py-1 backdrop-blur-sm">
                       <span className="font-mono text-fluid-xs uppercase tracking-wider text-gold">
                         {gift.status === 'reserved' && 'Reserved'}
                         {gift.status === 'purchased' && 'Purchased'}
-                        {gift.status === 'received' && '✦ Received'}
+                        {gift.status === 'received' && 'Received'}
                       </span>
                     </div>
                   )}
-
-                  {/* Shop badge */}
                   {gift.shop_name && (
                     <div className="absolute left-3 top-3 rounded-full border border-gold/30 bg-background/80 px-3 py-1 backdrop-blur-sm">
-                      <span
-                        className={`font-mono text-fluid-xs uppercase tracking-wider ${SHOP_COLORS[shopName]}`}
-                      >
+                      <span className={'font-mono text-fluid-xs uppercase tracking-wider ' + SHOP_COLORS[shopName]}>
                         {SHOP_LABELS[shopName]}
                       </span>
                     </div>
                   )}
                 </div>
-
                 <div className="flex flex-1 flex-col p-5 md:p-6">
                   <h3 className="font-heading text-fluid-xl font-light italic text-cream">
                     {gift.name}
                   </h3>
-
                   {gift.description && (
                     <p className="mt-2 font-sans text-fluid-sm leading-relaxed text-cream/65">
                       {gift.description}
                     </p>
                   )}
-
                   <p className="mt-3 font-mono text-fluid-sm tracking-wider text-gold">
                     {formatPrice(gift.price_idr)}
                   </p>
-
-                  {/* Footer area: shop link + reserve button */}
                   <div className="mt-auto flex flex-col gap-2 pt-5">
-                    {/* Shop link */}
                     {gift.shop_url && (
-<a
-  href={gift.shop_url}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gold/20 bg-background/30 px-3 py-2 font-mono text-fluid-xs uppercase tracking-wider text-cream/75 transition hover:border-gold/40 hover:text-cream"
->
-  <ExternalLink className="h-3.5 w-3.5" />
-  View at {SHOP_LABELS[shopName]}
-</a>
+                      <button
+                        type="button"
+                        onClick={() => window.open(gift.shop_url as string, '_blank', 'noopener,noreferrer')}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gold/20 bg-background/30 px-3 py-2 font-mono text-fluid-xs uppercase tracking-wider text-cream/75 transition hover:border-gold/40 hover:text-cream"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        View at {SHOP_LABELS[shopName]}
+                      </button>
                     )}
-
-                    {/* Reserve / Reserved by */}
                     {!isAvailable ? (
                       <p className="rounded-lg border border-gold/15 bg-background/30 px-4 py-3 text-center font-sans text-fluid-sm italic text-cream/60">
-                        {gift.reserved_by_name
-                          ? `Reserved by ${gift.reserved_by_name}`
-                          : 'Reserved ✦'}
+                        {gift.reserved_by_name ? 'Reserved by ' + gift.reserved_by_name : 'Reserved'}
                       </p>
                     ) : (
                       <button
@@ -236,7 +216,6 @@ export function GiftRegistry() {
         </motion.div>
       )}
 
-      {/* Monetary Gift */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -250,12 +229,9 @@ export function GiftRegistry() {
             Monetary Gift
           </h3>
         </div>
-
         <p className="font-sans text-fluid-base leading-relaxed text-cream/80">
-          For those who prefer to give a monetary gift, you may transfer to the account
-          below.
+          For those who prefer to give a monetary gift, you may transfer to the account below.
         </p>
-
         <div className="mt-6 rounded-xl border border-gold/20 bg-background/40 p-5">
           <p className="font-mono text-fluid-xs uppercase tracking-[0.25em] text-gold/80">
             Bank Central Asia
@@ -279,7 +255,6 @@ export function GiftRegistry() {
         </div>
       </motion.div>
 
-      {/* Reservation Modal */}
       <AnimatePresence>
         {modalGift && (
           <motion.div
@@ -287,12 +262,7 @@ export function GiftRegistry() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            onClick={() => {
-              setModalGift(null)
-              setGuestName('')
-              setGuestEmail('')
-              setReserveError('')
-            }}
+            onClick={closeModal}
             className="fixed inset-0 z-50 flex items-end justify-center bg-background/85 p-4 backdrop-blur-md sm:items-center safe-bottom"
           >
             <motion.div
@@ -308,24 +278,16 @@ export function GiftRegistry() {
                   Reserve Gift
                 </h3>
                 <button
-                  onClick={() => {
-                    setModalGift(null)
-                    setGuestName('')
-                    setGuestEmail('')
-                    setReserveError('')
-                  }}
+                  onClick={closeModal}
                   className="touch-target rounded-lg p-1 text-muted-foreground transition hover:text-cream"
                   aria-label="Close"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-
               <p className="mt-4 font-sans text-fluid-base leading-relaxed text-cream/80">
-                You are reserving <span className="text-gold">{modalGift.name}</span> (
-                {formatPrice(modalGift.price_idr)}).
+                You are reserving <span className="text-gold">{modalGift.name}</span> ({formatPrice(modalGift.price_idr)}).
               </p>
-
               <div className="mt-5 space-y-3">
                 <input
                   type="text"
@@ -350,7 +312,6 @@ export function GiftRegistry() {
                   }}
                 />
               </div>
-
               {reserveError && (
                 <motion.p
                   initial={{ opacity: 0, y: -4 }}
@@ -360,21 +321,13 @@ export function GiftRegistry() {
                   {reserveError}
                 </motion.p>
               )}
-
               <p className="mt-4 flex items-start gap-2 font-sans text-fluid-xs italic text-cream/55">
                 <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-gold/70" />
-                After reserving, you can purchase the gift at your convenience using the
-                shop link. Kelvin & Annisa will be notified.
+                After reserving, you can purchase the gift at your convenience using the shop link. Kelvin & Annisa will be notified.
               </p>
-
               <div className="mt-6 flex gap-3">
                 <button
-                  onClick={() => {
-                    setModalGift(null)
-                    setGuestName('')
-                    setGuestEmail('')
-                    setReserveError('')
-                  }}
+                  onClick={closeModal}
                   disabled={submitting}
                   className="touch-target flex-1 rounded-lg border border-gold/25 px-4 py-3 font-mono text-fluid-xs uppercase tracking-[0.2em] text-muted-foreground transition hover:border-gold/50 hover:text-cream disabled:opacity-50"
                 >
@@ -392,8 +345,6 @@ export function GiftRegistry() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <Divider />
     </section>
   )
 }
