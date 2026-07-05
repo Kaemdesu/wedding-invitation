@@ -164,7 +164,6 @@
       0 0 40px -8px oklch(0.74 0.1 85 / 35%);
   }
 
-  /* Fluid typography — slightly smaller minimums for tighter mobile fit */
   .text-fluid-xs {
     font-size: clamp(0.7rem, 0.65rem + 0.25vw, 0.875rem);
   }
@@ -261,25 +260,16 @@
   }
 }
 
-/* Mobile-specific breathing room — extra horizontal padding & vertical rhythm */
+/* Mobile-specific breathing room — only sections inside the content wrapper (excludes Hero) */
 @media (max-width: 640px) {
-  section {
+  main > div > section,
+  main > div > div > section {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
   }
 
-  section .max-w-6xl,
-  section .max-w-5xl,
-  section .max-w-4xl,
-  section .max-w-3xl,
-  section .max-w-2xl,
-  section .max-w-xl {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-
-  /* Reduce vertical section padding on mobile for tighter rhythm */
-  section.py-24 {
+  main > div > section.py-24,
+  main > div > div > section.py-24 {
     padding-top: 4rem !important;
     padding-bottom: 4rem !important;
   }
