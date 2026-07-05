@@ -83,19 +83,6 @@ export function BismillahTransition() {
         >
           (QS. Ar-Rum: 21)
         </motion.p>
-
-        {/* Bottom ornament */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
-          transition={{ duration: 1.2, delay: 0.5, ease: easeLuxury }}
-          className="mx-auto mt-12 flex items-center justify-center gap-3 md:mt-16"
-        >
-          <span className="block h-px w-12 bg-linear-to-l from-gold/60 to-transparent md:w-24" />
-          <span className="text-fluid-base text-gold/75">✦</span>
-          <span className="block h-px w-12 bg-linear-to-r from-gold/60 to-transparent md:w-24" />
-        </motion.div>
       </div>
     </section>
   )
