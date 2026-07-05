@@ -2,83 +2,48 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
-type RsvpPayload = {
-  fullName?: string
-  email?: string
-  attendance?: 'accept' | 'decline'
+function verifyPin(req: NextRequest): boolean {
+  const pin = req.headers.get('x-admin-pin')
+  const expected = process.env.ADMIN_PIN
+  return !!pin && !!expected && pin === expected
 }
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  if (!verifyPin(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   try {
-    const body = (await req.json()) as RsvpPayload
-
-    // ---- Validation ----
-    const fullName = body.fullName?.trim()
-    const email = body.email?.trim().toLowerCase()
-    const attendance = body.attendance
-
-    if (!fullName || fullName.length < 2) {
-      return NextResponse.json(
-        { error: 'Please enter your full name' },
-        { status: 400 }
-      )
-    }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json(
-        { error: 'Please enter a valid email' },
-        { status: 400 }
-      )
-    }
-    if (attendance !== 'accept' && attendance !== 'decline') {
-      return NextResponse.json(
-        { error: 'Please select attendance' },
-        { status: 400 }
-      )
-    }
-
-    // ---- Capture metadata (anti-spam tracking) ----
-    const ipAddress =
-      req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
-      req.headers.get('x-real-ip') ||
-      null
-    const userAgent = req.headers.get('user-agent') || null
-
-    // ---- Insert into Supabase ----
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('rsvps')
-      .insert({
-        full_name: fullName,
-        email,
-        attendance,
-        ip_address: ipAddress,
-        user_agent: userAgent,
-      })
-      .select('id')
-      .single()
-
-    if (error) {
-      // Unique violation = already RSVPd with this email
-      if (error.code === '23505') {
-        return NextResponse.json(
-          { error: 'This email has already submitted an RSVP. Thank you!' },
-          { status: 409 }
-        )
-      }
-      console.error('[RSVP] Supabase error:', error)
-      return NextResponse.json(
-        { error: 'Failed to save RSVP. Please try again.' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({ ok: true, id: data.id })
+      .select('*')
+      .order('created_at', { ascending: false })
+    if (error) throw error
+    return NextResponse.json({ rsvps: data || [] })
   } catch (err) {
-    console.error('[RSVP] Unexpected error:', err)
-    return NextResponse.json(
-      { error: 'Something went wrong. Please try again.' },
-      { status: 500 }
-    )
+    console.error('[ADMIN RSVPS GET] Error:', err)
+    return NextResponse.json({ error: 'Failed to load RSVPs' }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  if (!verifyPin(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  try {
+    const { searchParams } = new URL(req.url)
+    const rsvpId = searchParams.get('id')?.trim()
+    if (!rsvpId) {
+      return NextResponse.json({ error: 'RSVP ID is required' }, { status: 400 })
+    }
+    const supabase = getSupabaseAdmin()
+    const { error } = await supabase.from('rsvps').delete().eq('id', rsvpId)
+    if (error) throw error
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[ADMIN RSVPS DELETE] Error:', err)
+    return NextResponse.json({ error: 'Failed to delete RSVP' }, { status: 500 })
   }
 }
