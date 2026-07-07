@@ -31,7 +31,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.3,
             ease: easeLuxury,
           }}
-          className="whitespace-nowrap font-geographica leading-[1.15] text-cream text-[clamp(1.4rem,4.2vw,4.5rem)]"
+          className="whitespace-nowrap overflow-visible py-3 font-geographica leading-[1.6] text-cream text-[clamp(1.2rem,3.8vw,4rem)]"
         >
           As one chapter is preserved for a lifetime,
         </motion.p>
@@ -44,7 +44,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.9,
             ease: easeLuxury,
           }}
-          className="mt-6 whitespace-nowrap font-geographica leading-[1.15] text-gradient-gold text-[clamp(1.3rem,4vw,4.3rem)] md:mt-8"
+          className="mt-4 whitespace-nowrap overflow-visible py-3 font-geographica leading-[1.6] text-gradient-gold text-[clamp(1.15rem,3.6vw,3.8rem)] md:mt-6"
         >
           we invite you to celebrate its beginning with us.
         </motion.p>
