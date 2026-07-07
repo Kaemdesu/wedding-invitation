@@ -23,28 +23,15 @@ export function InvitationMessage() {
           <span className="block h-px w-12 bg-gradient-to-r from-gold/60 to-transparent md:w-24" />
         </motion.div>
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-15% 0px -15% 0px' }}
-          transition={{
-            duration: reduceMotion ? 0 : 1.0,
-            delay: reduceMotion ? 0 : 0.2,
-            ease: easeLuxury,
-          }}
-          className="font-mono text-fluid-xs uppercase tracking-[0.4em] text-gold/85 md:tracking-[0.45em]"
-        >
-          An Invitation
-        </motion.p>
-        <motion.p
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-15% 0px -15% 0px' }}
           transition={{
             duration: reduceMotion ? 0 : 1.3,
-            delay: reduceMotion ? 0 : 0.5,
+            delay: reduceMotion ? 0 : 0.3,
             ease: easeLuxury,
           }}
-          className="mt-10 font-heading text-fluid-2xl font-light italic leading-snug text-cream md:mt-14 md:text-fluid-3xl"
+          className="font-geographica text-fluid-4xl leading-[1.15] text-cream md:text-fluid-5xl"
         >
           As one chapter is preserved for a lifetime,
         </motion.p>
@@ -54,10 +41,10 @@ export function InvitationMessage() {
           viewport={{ once: true, margin: '-15% 0px -15% 0px' }}
           transition={{
             duration: reduceMotion ? 0 : 1.3,
-            delay: reduceMotion ? 0 : 1.0,
+            delay: reduceMotion ? 0 : 0.9,
             ease: easeLuxury,
           }}
-          className="mt-4 font-heading text-fluid-2xl font-light italic leading-snug text-gradient-gold md:mt-6 md:text-fluid-3xl"
+          className="mt-6 font-geographica text-fluid-4xl leading-[1.15] text-gradient-gold md:mt-8 md:text-fluid-5xl"
         >
           we invite you to celebrate its beginning with us.
         </motion.p>
@@ -67,9 +54,9 @@ export function InvitationMessage() {
           viewport={{ once: true }}
           transition={{
             duration: reduceMotion ? 0 : 1,
-            delay: reduceMotion ? 0 : 1.6,
+            delay: reduceMotion ? 0 : 1.5,
           }}
-          className="mt-10 font-poppins font-light text-fluid-sm tracking-[0.25em] text-cream/70 md:mt-14"
+          className="mt-12 font-poppins font-light text-fluid-sm tracking-[0.25em] text-cream/75 md:mt-16"
         >
           — {wedding.groom.shortName} &amp; {wedding.bride.shortName}, together with our families
         </motion.p>
@@ -79,7 +66,7 @@ export function InvitationMessage() {
           viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
           transition={{
             duration: reduceMotion ? 0 : 1.2,
-            delay: reduceMotion ? 0 : 1.4,
+            delay: reduceMotion ? 0 : 1.3,
             ease: easeLuxury,
           }}
           className="mx-auto mt-12 flex items-center justify-center gap-3 md:mt-16"
