@@ -1,9 +1,7 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import { wedding } from '@/lib/wedding-config'
-import { SectionHeading } from './section-heading'
-import { staggerFast, fadeUp, viewportDefaults } from '@/lib/motion'
+import { staggerFast, fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 const fallbackImages = [
   '/images/gallery-1.webp',
@@ -29,10 +27,28 @@ export function Gallery() {
     galleryImages.push(fallbackImages[galleryImages.length])
   }
   const images = galleryImages.slice(0, 6)
-
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
-      <SectionHeading subtitle="Memories" title="Moments to remember" />
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mb-12 text-center md:mb-16"
+      >
+        <motion.p
+          variants={fadeUp}
+          className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
+        >
+          Memories
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
+        >
+          Moments to remember
+        </motion.h2>
+      </motion.div>
       <motion.div variants={staggerFast} initial="hidden" whileInView="show" viewport={viewportDefaults} className="mx-auto grid max-w-6xl auto-rows-[180px] grid-cols-2 gap-3 sm:auto-rows-[220px] sm:gap-4 md:auto-rows-[260px] md:grid-cols-6">
         {images.map((src, i) => {
           const bgStyle = { backgroundImage: 'url(' + src + ')' }

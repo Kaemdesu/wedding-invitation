@@ -1,20 +1,17 @@
 'use client'
-
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Heart, X } from 'lucide-react'
 import { useState } from 'react'
 import { wedding } from '@/lib/wedding-config'
-import { SectionHeading } from './section-heading'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 type Attendance = 'accept' | 'decline'
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
 const fieldClass =
-  'w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-sans text-fluid-base text-cream placeholder:text-muted-foreground/60 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50 touch-target'
-
+  'w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-poppins font-light text-fluid-base text-cream placeholder:text-muted-foreground/60 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50 touch-target'
 const labelClass =
-  'mb-2 block font-mono text-fluid-xs font-semibold uppercase tracking-[0.2em] text-gold'
+  'mb-2 block font-poppins text-fluid-xs font-semibold uppercase tracking-[0.2em] text-gold'
 
 export function Rsvp() {
   const [attendance, setAttendance] = useState<Attendance>('accept')
@@ -25,7 +22,6 @@ export function Rsvp() {
     e.preventDefault()
     setStatus('loading')
     setErrorMsg('')
-
     const form = e.currentTarget
     const data = new FormData(form)
     const payload = {
@@ -33,22 +29,18 @@ export function Rsvp() {
       email: ((data.get('email') as string) || '').trim(),
       attendance,
     }
-
     try {
       const res = await fetch('/api/rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-
       const result = await res.json()
-
       if (!res.ok) {
         setErrorMsg(result.error || 'Failed to submit RSVP. Please try again.')
         setStatus('error')
         return
       }
-
       setStatus('success')
       form.reset()
       setAttendance('accept')
@@ -60,19 +52,36 @@ export function Rsvp() {
 
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
-      <SectionHeading subtitle="RSVP" title="Will you join us?" />
-
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mb-12 text-center md:mb-16"
+      >
+        <motion.p
+          variants={fadeUp}
+          className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
+        >
+          RSVP
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
+        >
+          Kindly reply
+        </motion.h2>
+      </motion.div>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewportDefaults}
         transition={{ duration: 0.8 }}
-        className="mx-auto mb-10 max-w-xl text-center font-sans text-fluid-base text-cream/80 md:mb-14"
+        className="mx-auto mb-10 max-w-xl text-center font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mb-14"
       >
         We hope you will join us on our special day. Kindly let us know by{' '}
-        <span className="text-gold">{wedding.rsvpBy}</span>.
+        <span className="font-poppins font-medium text-gold">{wedding.rsvpBy}</span>.
       </motion.p>
-
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -93,17 +102,16 @@ export function Rsvp() {
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 bg-gold/10">
                 <Heart className="h-7 w-7 text-gold" />
               </div>
-              <h3 className="mt-6 font-heading text-fluid-2xl font-light italic text-gradient-gold">
+              <h3 className="mt-6 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(1.8rem,3vw,3rem)]">
                 Thank You
               </h3>
-              <p className="mt-4 font-sans text-fluid-base leading-relaxed text-cream/80">
-                Your RSVP has been received. We cannot wait to celebrate this
-                beautiful day with you.
+              <p className="mt-4 font-poppins font-light text-fluid-base leading-relaxed text-cream/80">
+                Your RSVP has been received. We cannot wait to celebrate this beautiful day with you.
               </p>
               <button
                 type="button"
                 onClick={() => setStatus('idle')}
-                className="mt-6 font-mono text-fluid-xs uppercase tracking-[0.2em] text-gold/70 underline-offset-4 hover:text-gold hover:underline"
+                className="mt-6 font-poppins font-medium text-fluid-xs uppercase tracking-[0.2em] text-gold/70 underline-offset-4 hover:text-gold hover:underline"
               >
                 Submit another RSVP
               </button>
@@ -131,7 +139,6 @@ export function Rsvp() {
                   disabled={status === 'loading'}
                 />
               </motion.div>
-
               <motion.div variants={fadeUp}>
                 <label htmlFor="email" className={labelClass}>
                   Email Address
@@ -146,7 +153,6 @@ export function Rsvp() {
                   disabled={status === 'loading'}
                 />
               </motion.div>
-
               <motion.div variants={fadeUp}>
                 <span className={labelClass}>Will You Attend?</span>
                 <div className="grid grid-cols-2 gap-3">
@@ -154,11 +160,12 @@ export function Rsvp() {
                     type="button"
                     onClick={() => setAttendance('accept')}
                     disabled={status === 'loading'}
-                    className={`touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-fluid-base transition ${
-                      attendance === 'accept'
+                    className={
+                      'touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-poppins font-medium text-fluid-base transition ' +
+                      (attendance === 'accept'
                         ? 'border-gold bg-gold/15 text-cream glow-gold'
-                        : 'border-gold/25 text-muted-foreground hover:border-gold/50'
-                    }`}
+                        : 'border-gold/25 text-muted-foreground hover:border-gold/50')
+                    }
                   >
                     <Check className="h-4 w-4" /> Joyfully Accept
                   </button>
@@ -166,33 +173,32 @@ export function Rsvp() {
                     type="button"
                     onClick={() => setAttendance('decline')}
                     disabled={status === 'loading'}
-                    className={`touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-sans text-fluid-base transition ${
-                      attendance === 'decline'
+                    className={
+                      'touch-target flex items-center justify-center gap-2 rounded-lg border px-4 py-3 font-poppins font-medium text-fluid-base transition ' +
+                      (attendance === 'decline'
                         ? 'border-gold bg-gold/15 text-cream glow-gold'
-                        : 'border-gold/25 text-muted-foreground hover:border-gold/50'
-                    }`}
+                        : 'border-gold/25 text-muted-foreground hover:border-gold/50')
+                    }
                   >
                     <X className="h-4 w-4" /> Regretfully Decline
                   </button>
                 </div>
               </motion.div>
-
               {status === 'error' && (
                 <motion.p
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-center font-sans text-fluid-sm text-destructive"
+                  className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-center font-poppins font-light text-fluid-sm text-destructive"
                 >
                   {errorMsg}
                 </motion.p>
               )}
-
               <motion.button
                 variants={fadeUp}
                 whileTap={{ scale: 0.97 }}
                 type="submit"
                 disabled={status === 'loading'}
-                className="touch-target w-full rounded-lg bg-gradient-gold px-6 py-4 font-mono text-fluid-sm font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="touch-target w-full rounded-lg bg-gradient-gold px-6 py-4 font-poppins text-fluid-sm font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {status === 'loading' ? 'Sending...' : 'Send RSVP ✦'}
               </motion.button>
