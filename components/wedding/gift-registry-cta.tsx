@@ -1,8 +1,6 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import { Gift, ArrowRight } from 'lucide-react'
-import { SectionHeading } from './section-heading'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
 export function GiftRegistryCta() {
@@ -11,11 +9,28 @@ export function GiftRegistryCta() {
       window.location.href = '/gifts'
     }
   }
-
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
-      <SectionHeading subtitle="Gift Registry" title="With love & gratitude" />
-
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mb-12 text-center md:mb-16"
+      >
+        <motion.p
+          variants={fadeUp}
+          className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
+        >
+          Gift Registry
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
+        >
+          With love &amp; gratitude
+        </motion.h2>
+      </motion.div>
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -29,20 +44,17 @@ export function GiftRegistryCta() {
         >
           <Gift className="h-7 w-7 text-gold md:h-8 md:w-8" />
         </motion.div>
-
         <motion.p
           variants={fadeUp}
-          className="font-sans text-fluid-base leading-relaxed text-cream/85 md:text-fluid-lg"
+          className="font-poppins font-light text-fluid-base leading-relaxed text-cream/85 md:text-fluid-lg"
         >
-          Your presence is the greatest gift. However, if you wish to honor us with a
-          gift, we have curated a small registry for you to explore.
+          Your presence is the greatest gift. However, if you wish to honor us with a gift, we have curated a small registry for you to explore.
         </motion.p>
-
         <motion.div variants={fadeUp} className="mt-8 md:mt-10">
           <button
             type="button"
             onClick={goToGifts}
-            className="touch-target inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-gold px-8 py-4 font-mono text-fluid-xs font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90"
+            className="touch-target inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-gold px-8 py-4 font-poppins text-fluid-xs font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90"
           >
             View Gift Registry
             <ArrowRight className="h-4 w-4" />
