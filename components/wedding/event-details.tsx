@@ -50,30 +50,27 @@ export function EventDetails() {
         initial="hidden"
         whileInView="show"
         viewport={viewportDefaults}
-        className="mb-12 text-center md:mb-16"
+        className="mb-16 text-center md:mb-20"
       >
         <motion.p
           variants={fadeUp}
           className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
         >
-          The Celebration
+          Order of Celebration
         </motion.p>
         <motion.h2
           variants={fadeUp}
           className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
         >
-          Where love begins
+          Save the Date
         </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          className="mt-10 font-poppins font-light text-fluid-lg leading-relaxed tracking-wide text-cream/90 md:mt-14"
+        >
+          Saturday, 8 August 2026
+        </motion.p>
       </motion.div>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewportDefaults}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mb-12 max-w-2xl text-center font-poppins font-light text-fluid-lg leading-relaxed tracking-wide text-cream/90 md:mb-16"
-      >
-        Saturday, 8 August 2026
-      </motion.p>
       <motion.div
         variants={staggerContainer}
         initial="hidden"

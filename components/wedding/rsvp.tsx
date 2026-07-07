@@ -57,7 +57,7 @@ export function Rsvp() {
         initial="hidden"
         whileInView="show"
         viewport={viewportDefaults}
-        className="mb-12 text-center md:mb-16"
+        className="mb-16 text-center md:mb-20"
       >
         <motion.p
           variants={fadeUp}
@@ -71,17 +71,14 @@ export function Rsvp() {
         >
           Kindly reply
         </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          className="mx-auto mt-10 max-w-xl font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mt-14"
+        >
+          We hope you will join us on our special day. Kindly let us know by{' '}
+          <span className="font-poppins font-medium text-gold">{wedding.rsvpBy}</span>.
+        </motion.p>
       </motion.div>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewportDefaults}
-        transition={{ duration: 0.8 }}
-        className="mx-auto mb-10 max-w-xl text-center font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mb-14"
-      >
-        We hope you will join us on our special day. Kindly let us know by{' '}
-        <span className="font-poppins font-medium text-gold">{wedding.rsvpBy}</span>.
-      </motion.p>
       <motion.div
         variants={staggerContainer}
         initial="hidden"
