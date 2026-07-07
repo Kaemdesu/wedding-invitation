@@ -2,13 +2,13 @@ export const wedding = {
   bride: {
     name: 'Annisa Fajri Luthfiani',
     shortName: 'Annisa',
-    bio: 'A gentle soul with an endless love for poetry, quiet mornings, and the people she holds dear. Her warmth turns every ordinary moment into something worth remembering.',
+    bio: "The beloved first daughter of Mrs. Apong Wiwin Winarsih and the late Mr. Hendro Dwi Tjiptadi.\n\nEmbracing a new chapter as Mrs. Muliawan.",
     photo: '/images/bride-frame.png',
   },
   groom: {
     name: 'Kelvin Muliawan',
     shortName: 'Kelvin',
-    bio: 'A dreamer and a builder, steady and kind, with a heart set on a lifetime of shared adventures. He believes the best stories are the ones written together.',
+    bio: "The beloved first son of Mrs. Indriyani, the late Mr. Herman Tedja Muliawan, and Mr. Achmad Hidayat, who lovingly stepped into the role of father.\n\nSoon to be Annisa's husband.",
     photo: '/images/groom-frame.png',
   },
   date: {

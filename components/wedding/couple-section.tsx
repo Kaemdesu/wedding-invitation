@@ -15,7 +15,7 @@ function Portrait(props: { person: Person; align: 'left' | 'right' }) {
       <h3 className="mt-6 py-2 font-geographica leading-[1.4] text-gradient-gold text-[clamp(1.8rem,3vw,3rem)] md:mt-8">
         {person.name}
       </h3>
-      <p className="mt-4 max-w-md font-poppins font-light text-fluid-base leading-relaxed text-cream/85">
+      <p className="mt-4 max-w-md whitespace-pre-line font-poppins font-light text-fluid-base leading-relaxed text-cream/85">
         {person.bio}
       </p>
     </motion.div>
