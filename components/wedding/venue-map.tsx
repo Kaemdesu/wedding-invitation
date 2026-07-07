@@ -54,17 +54,6 @@ export function VenueMap() {
       </div>
       <motion.div
         variants={fadeUp}
-        className="mt-6 text-center md:mt-8"
-      >
-        <h3 className="font-heading text-fluid-2xl font-light italic text-gradient-gold">
-          {venue.name}
-        </h3>
-        <p className="mt-2 font-poppins font-light text-fluid-base text-cream/80">
-          {venue.fullAddress}
-        </p>
-      </motion.div>
-      <motion.div
-        variants={fadeUp}
         className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center md:mt-8"
       >
         <a

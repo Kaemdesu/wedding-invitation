@@ -31,7 +31,7 @@ function EventCard({
         <Clock className="h-5 w-5 shrink-0" aria-hidden />
         <span className="font-poppins font-medium text-fluid-sm tracking-wider">{time}</span>
       </div>
-      <h3 className="mt-5 font-heading text-fluid-2xl font-light italic text-cream md:mt-6">
+      <h3 className="mt-5 font-poppins font-semibold text-fluid-2xl leading-tight text-cream md:mt-6">
         {venue}
       </h3>
       <div className="mt-3 flex items-start gap-3 text-cream/80">
@@ -70,9 +70,9 @@ export function EventDetails() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewportDefaults}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mb-12 max-w-2xl text-center font-heading text-fluid-xl font-light italic leading-snug text-cream/90 md:mb-16"
+        className="mx-auto mb-12 max-w-2xl text-center font-poppins font-light text-fluid-lg leading-relaxed tracking-wide text-cream/90 md:mb-16"
       >
-        {wedding.date.full}
+        Saturday, 8 August 2026
       </motion.p>
       <motion.div
         variants={staggerContainer}
