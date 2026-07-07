@@ -10,10 +10,8 @@ import { Footer } from '@/components/wedding/footer'
 import { LazySection } from '@/components/wedding/lazy-section'
 import { ElegantBackground } from '@/components/wedding/elegant-background'
 import { MusicPlayer } from '@/components/wedding/music-player'
-import { PoetryTransition } from '@/components/wedding/poetry-transition'
 import { BismillahTransition } from '@/components/wedding/bismillah-transition'
 import { InvitationMessage } from '@/components/wedding/invitation-message'
-import { wedding } from '@/lib/wedding-config'
 
 export default function Page() {
   return (
@@ -31,31 +29,24 @@ export default function Page() {
           <LazySection>
             <CoupleSection />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterCouple} />
           <LazySection>
             <EventDetails />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterEvents} />
           <LazySection>
             <Gallery />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterGallery} />
           <LazySection>
             <Rsvp />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterRsvp} />
           <LazySection>
             <WishesWall />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterWishes} />
           <LazySection>
             <GiftRegistryCta />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterGifts} />
           <LazySection>
             <Countdown />
           </LazySection>
-          <PoetryTransition lines={wedding.poetry.afterCountdown} />
           <Footer />
         </div>
       </main>
