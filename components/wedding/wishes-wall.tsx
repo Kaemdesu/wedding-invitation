@@ -1,7 +1,7 @@
 'use client'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Pin, Sparkles, Send, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { viewportDefaults, easeLuxury, fadeUp, staggerContainer } from '@/lib/motion'
 import type { PublicWish } from '@/lib/supabase'
@@ -38,12 +38,7 @@ function getCooldownRemaining(): number {
 }
 function WishCard({ wish }: { wish: PublicWish }) {
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.96, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96, y: -8 }}
-      transition={{ duration: 0.55, ease: easeLuxury }}
+    <div
       className={
         'group relative break-inside-avoid rounded-2xl border bg-card/40 p-5 backdrop-blur-sm md:p-6 ' +
         (wish.is_pinned ? 'border-gold/40 bg-gold/[0.04]' : 'border-gold/15')
@@ -76,7 +71,7 @@ function WishCard({ wish }: { wish: PublicWish }) {
           {timeAgo(wish.created_at)}
         </p>
       </div>
-    </motion.div>
+    </div>
   )
 }
 export function WishesWall() {
@@ -84,6 +79,7 @@ export function WishesWall() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
+  const prevPageRef = useRef(0)
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -175,15 +171,16 @@ export function WishesWall() {
   useEffect(() => {
     if (totalPages <= 1) return
     const interval = setInterval(() => {
-      setPage((p) => (p + 1) % totalPages)
+      setPage((prevPageRef.current + 1) % totalPages)
     }, AUTO_ROTATE_MS)
     return () => clearInterval(interval)
   }, [totalPages])
   useEffect(() => {
     if (page >= totalPages) setPage(0)
-  }, [page, totalPages])
-  const goPrev = () => setPage((p) => (p - 1 + totalPages) % totalPages)
-  const goNext = () => setPage((p) => (p + 1) % totalPages)
+    prevPageRef.current = safePage
+  }, [page, totalPages, safePage])
+  const goPrev = () => setPage((safePage - 1 + totalPages) % totalPages)
+  const goNext = () => setPage((safePage + 1) % totalPages)
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (submitting) return
@@ -282,19 +279,28 @@ export function WishesWall() {
           </motion.p>
         ) : (
           <div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:auto-rows-[minmax(180px,1fr)] md:gap-6 lg:grid-cols-3">
-              <AnimatePresence mode="popLayout">
-                {currentPageWishes.map((wish) => (
-                  <WishCard key={wish.id} wish={wish} />
-                ))}
+            <div className="relative">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={safePage}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:auto-rows-[minmax(180px,1fr)] md:gap-6 lg:grid-cols-3"
+                >
+                  {currentPageWishes.map((wish) => (
+                    <WishCard key={wish.id} wish={wish} />
+                  ))}
+                  {Array.from({ length: placeholderCount }).map((_, i) => (
+                    <div
+                      key={'ph-' + i}
+                      aria-hidden
+                      className="hidden rounded-2xl border border-transparent sm:block sm:min-h-[180px]"
+                    />
+                  ))}
+                </motion.div>
               </AnimatePresence>
-              {Array.from({ length: placeholderCount }).map((_, i) => (
-                <div
-                  key={'ph-' + safePage + '-' + i}
-                  aria-hidden
-                  className="hidden rounded-2xl border border-transparent sm:block sm:min-h-[180px]"
-                />
-              ))}
             </div>
             {totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center gap-4">
