@@ -1,40 +1,33 @@
 'use client'
-
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Pin, Sparkles, Send, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { SectionHeading } from './section-heading'
-import { viewportDefaults, easeLuxury } from '@/lib/motion'
+import { viewportDefaults, easeLuxury, fadeUp, staggerContainer } from '@/lib/motion'
 import type { PublicWish } from '@/lib/supabase'
-
 const PER_PAGE = 6
 const AUTO_ROTATE_MS = 7000
-
 const BROWSER_COOLDOWN_MS = 2 * 60 * 1000
 const COOLDOWN_KEY = 'wishes-last-sent'
-
 function timeAgo(iso: string): string {
   const now = Date.now()
   const then = new Date(iso).getTime()
   const sec = Math.floor((now - then) / 1000)
   if (sec < 60) return 'just now'
   const min = Math.floor(sec / 60)
-  if (min < 60) return `${min}m ago`
+  if (min < 60) return min + 'm ago'
   const hr = Math.floor(min / 60)
-  if (hr < 24) return `${hr}h ago`
+  if (hr < 24) return hr + 'h ago'
   const day = Math.floor(hr / 24)
-  if (day < 7) return `${day}d ago`
+  if (day < 7) return day + 'd ago'
   return new Date(iso).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'short',
   })
 }
-
 function firstName(full: string): string {
   return full.trim().split(/\s+/)[0]
 }
-
 function getCooldownRemaining(): number {
   if (typeof window === 'undefined') return 0
   const last = localStorage.getItem(COOLDOWN_KEY)
@@ -43,7 +36,6 @@ function getCooldownRemaining(): number {
   const remaining = BROWSER_COOLDOWN_MS - elapsed
   return remaining > 0 ? remaining : 0
 }
-
 function WishCard({ wish }: { wish: PublicWish }) {
   return (
     <motion.div
@@ -52,57 +44,51 @@ function WishCard({ wish }: { wish: PublicWish }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96, y: -8 }}
       transition={{ duration: 0.55, ease: easeLuxury }}
-      className={`group relative break-inside-avoid rounded-2xl border bg-card/40 p-5 backdrop-blur-sm md:p-6 ${
-        wish.is_pinned ? 'border-gold/40 bg-gold/[0.04]' : 'border-gold/15'
-      }`}
+      className={
+        'group relative break-inside-avoid rounded-2xl border bg-card/40 p-5 backdrop-blur-sm md:p-6 ' +
+        (wish.is_pinned ? 'border-gold/40 bg-gold/[0.04]' : 'border-gold/15')
+      }
     >
       {wish.is_pinned && (
         <div className="absolute -top-3 left-5 flex items-center gap-1.5 rounded-full border border-gold/40 bg-background px-3 py-1 backdrop-blur-sm">
           <Pin className="h-3 w-3 text-gold" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">
+          <span className="font-poppins font-medium text-[10px] uppercase tracking-[0.2em] text-gold">
             Pinned
           </span>
         </div>
       )}
-
       <div className="absolute -top-2 right-3 font-heading text-fluid-3xl font-light italic leading-none text-gold/15">
         ❝
       </div>
-
-      <p className="relative font-sans text-fluid-base leading-relaxed text-cream/90 [overflow-wrap:break-word]">
+      <p className="relative font-poppins font-light text-fluid-base leading-relaxed text-cream/90 [overflow-wrap:break-word]">
         {wish.message}
       </p>
-
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-gold/10 pt-3">
         <div className="flex min-w-0 items-center gap-2">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-gold font-mono text-xs font-semibold text-background">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-gold font-poppins text-xs font-semibold text-background">
             {firstName(wish.name).charAt(0).toUpperCase()}
           </div>
-          <p className="truncate font-heading text-fluid-base font-light italic text-gradient-gold">
+          <p className="truncate font-poppins font-semibold text-fluid-base text-gradient-gold">
             {firstName(wish.name)}
           </p>
         </div>
-        <p className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-cream/40">
+        <p className="shrink-0 font-poppins font-light text-[10px] uppercase tracking-wider text-cream/40">
           {timeAgo(wish.created_at)}
         </p>
       </div>
     </motion.div>
   )
 }
-
 export function WishesWall() {
   const [wishes, setWishes] = useState<PublicWish[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
-
   const [page, setPage] = useState(0)
-
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
-
   const loadAll = useCallback(async () => {
     try {
       const res = await fetch('/api/wishes?limit=100&offset=0', { cache: 'no-store' })
@@ -115,20 +101,16 @@ export function WishesWall() {
       setLoading(false)
     }
   }, [])
-
   useEffect(() => {
     loadAll()
   }, [loadAll])
-
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     if (!supabaseUrl || !supabaseAnonKey) return
-
     const client = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { persistSession: false },
     })
-
     const channel = client
       .channel('wishes-feed')
       .on(
@@ -171,12 +153,10 @@ export function WishesWall() {
         }
       )
       .subscribe()
-
     return () => {
       client.removeChannel(channel)
     }
   }, [])
-
   const sortedWishes = useMemo(() => {
     return [...wishes].sort((a, b) => {
       if (a.is_pinned && !b.is_pinned) return -1
@@ -184,14 +164,12 @@ export function WishesWall() {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   }, [wishes])
-
   const totalPages = Math.max(1, Math.ceil(sortedWishes.length / PER_PAGE))
   const safePage = Math.min(page, totalPages - 1)
   const currentPageWishes = sortedWishes.slice(
     safePage * PER_PAGE,
     safePage * PER_PAGE + PER_PAGE
   )
-
   useEffect(() => {
     if (totalPages <= 1) return
     const interval = setInterval(() => {
@@ -199,32 +177,27 @@ export function WishesWall() {
     }, AUTO_ROTATE_MS)
     return () => clearInterval(interval)
   }, [totalPages])
-
   useEffect(() => {
     if (page >= totalPages) setPage(0)
   }, [page, totalPages])
-
   const goPrev = () => setPage((p) => (p - 1 + totalPages) % totalPages)
   const goNext = () => setPage((p) => (p + 1) % totalPages)
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (submitting) return
-
     const remaining = getCooldownRemaining()
     if (remaining > 0) {
       const secs = Math.ceil(remaining / 1000)
       setErrorMsg(
-        `Please wait ${
-          secs > 60
-            ? `${Math.ceil(secs / 60)} minute${secs > 90 ? 's' : ''}`
-            : `${secs} seconds`
-        } before sending another wish.`
+        'Please wait ' +
+          (secs > 60
+            ? Math.ceil(secs / 60) + ' minute' + (secs > 90 ? 's' : '')
+            : secs + ' seconds') +
+          ' before sending another wish.'
       )
       setStatus('error')
       return
     }
-
     setSubmitting(true)
     setStatus('idle')
     setErrorMsg('')
@@ -259,22 +232,37 @@ export function WishesWall() {
     }
     setSubmitting(false)
   }
-
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
-      <SectionHeading subtitle="Words of love" title="Wishes from those we love" />
-
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewportDefaults}
+        className="mb-12 text-center md:mb-16"
+      >
+        <motion.p
+          variants={fadeUp}
+          className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
+        >
+          Words of love
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
+        >
+          Wishes from those we love
+        </motion.h2>
+      </motion.div>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={viewportDefaults}
         transition={{ duration: 0.8 }}
-        className="mx-auto mb-10 max-w-2xl text-center font-sans text-fluid-base italic text-cream/80 md:mb-14"
+        className="mx-auto mb-10 max-w-2xl text-center font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mb-14"
       >
-        Whether you&apos;ll be there in person or in spirit, leave us a note from
-        the heart. ✨
+        Whether you&apos;ll be there in person or in spirit, leave us a note from the heart. ✨
       </motion.p>
-
       <div className="mx-auto max-w-6xl">
         {loading ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
@@ -289,74 +277,58 @@ export function WishesWall() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="py-12 text-center font-sans text-fluid-base italic text-cream/60"
+            className="py-12 text-center font-poppins font-light text-fluid-base italic text-cream/60"
           >
-            Be the first to leave a wish ✨
+            Be the first to leave a wish 💛
           </motion.p>
         ) : (
           <div>
-            <div className="relative min-h-[500px] md:min-h-[420px]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={safePage}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -24 }}
-                  transition={{ duration: 0.5, ease: easeLuxury }}
-                  className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3"
-                >
-                  {currentPageWishes.map((wish) => (
-                    <WishCard key={wish.id} wish={wish} />
-                  ))}
-                </motion.div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+              <AnimatePresence mode="popLayout">
+                {currentPageWishes.map((wish) => (
+                  <WishCard key={wish.id} wish={wish} />
+                ))}
               </AnimatePresence>
             </div>
-
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-col items-center gap-4 md:mt-10">
+              <div className="mt-8 flex items-center justify-center gap-4">
+                <button
+                  onClick={goPrev}
+                  aria-label="Previous wishes"
+                  className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: totalPages }).map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setPage(i)}
-                      aria-label={`Go to page ${i + 1}`}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === safePage
-                          ? 'w-8 bg-gold'
-                          : 'w-1.5 bg-gold/30 hover:bg-gold/60'
-                      }`}
+                      aria-label={'Go to page ' + (i + 1)}
+                      className={
+                        'h-2 rounded-full transition-all ' +
+                        (i === safePage ? 'w-6 bg-gold' : 'w-2 bg-gold/30 hover:bg-gold/50')
+                      }
                     />
                   ))}
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={goPrev}
-                    aria-label="Previous wishes"
-                    className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={goNext}
-                    aria-label="Next wishes"
-                    className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
+                <button
+                  onClick={goNext}
+                  aria-label="Next wishes"
+                  className="touch-target inline-flex items-center justify-center rounded-full border border-gold/25 bg-card/30 p-2 text-gold/80 transition hover:border-gold hover:text-gold"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
             )}
           </div>
         )}
-
         {!loading && sortedWishes.length > 0 && (
-          <p className="mt-6 text-center font-mono text-fluid-xs uppercase tracking-[0.3em] text-cream/50 md:mt-8">
+          <p className="mt-6 text-center font-poppins font-medium text-fluid-xs uppercase tracking-[0.3em] text-cream/50 md:mt-8">
             <Heart className="mr-1 inline h-3 w-3 text-gold/70" /> {total}{' '}
             {total === 1 ? 'wish' : 'wishes'} from loved ones
           </p>
         )}
-
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -366,11 +338,10 @@ export function WishesWall() {
         >
           <div className="mb-5 flex items-center gap-3">
             <Sparkles className="h-4 w-4 text-gold" />
-            <p className="font-mono text-fluid-xs uppercase tracking-[0.3em] text-gold">
+            <p className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.3em] text-gold">
               Leave your wishes
             </p>
           </div>
-
           {status === 'success' ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -381,17 +352,17 @@ export function WishesWall() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-gold/10">
                 <Heart className="h-6 w-6 text-gold" />
               </div>
-              <p className="font-heading text-fluid-xl font-light italic text-gradient-gold">
+              <p className="py-1 font-geographica text-[clamp(1.6rem,2.8vw,2.6rem)] leading-[1.3] text-gradient-gold">
                 Thank you for your kind words
               </p>
-              <p className="mt-2 font-sans text-fluid-sm text-cream/75">
+              <p className="mt-2 font-poppins font-light text-fluid-sm text-cream/75">
                 Your wish has been added to the wall ✨
               </p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="mb-1.5 block font-mono text-fluid-xs uppercase tracking-[0.2em] text-gold">
+                <label className="mb-1.5 block font-poppins font-semibold text-fluid-xs uppercase tracking-[0.2em] text-gold">
                   Your name
                 </label>
                 <input
@@ -402,12 +373,11 @@ export function WishesWall() {
                   maxLength={60}
                   placeholder="e.g., Maria"
                   disabled={submitting}
-                  className="touch-target w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-sans text-fluid-base text-cream placeholder:text-muted-foreground/50 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50"
+                  className="touch-target w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-poppins font-light text-fluid-base text-cream placeholder:text-muted-foreground/50 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50"
                 />
               </div>
-
               <div>
-                <label className="mb-1.5 block font-mono text-fluid-xs uppercase tracking-[0.2em] text-gold">
+                <label className="mb-1.5 block font-poppins font-semibold text-fluid-xs uppercase tracking-[0.2em] text-gold">
                   Your wish
                 </label>
                 <textarea
@@ -418,27 +388,25 @@ export function WishesWall() {
                   maxLength={500}
                   placeholder="A wish, prayer, or memory you'd love to share with Kelvin & Annisa..."
                   disabled={submitting}
-                  className="touch-target w-full resize-none rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-sans text-fluid-base text-cream placeholder:text-muted-foreground/50 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50"
+                  className="touch-target w-full resize-none rounded-lg border border-gold/25 bg-background/60 px-4 py-3 font-poppins font-light text-fluid-base text-cream placeholder:text-muted-foreground/50 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/50"
                 />
-                <p className="mt-1 text-right font-mono text-fluid-xs text-cream/40">
+                <p className="mt-1 text-right font-poppins font-light text-fluid-xs text-cream/40">
                   {message.length} / 500
                 </p>
               </div>
-
               {status === 'error' && (
                 <motion.p
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-center font-sans text-fluid-sm text-destructive"
+                  className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-center font-poppins font-light text-fluid-sm text-destructive"
                 >
                   {errorMsg}
                 </motion.p>
               )}
-
               <button
                 type="submit"
                 disabled={submitting || !name.trim() || !message.trim()}
-                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-gold px-6 py-4 font-mono text-fluid-sm font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-gold px-6 py-4 font-poppins text-fluid-sm font-semibold uppercase tracking-[0.25em] text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send className="h-4 w-4" />
                 {submitting ? 'Sending...' : 'Send Wish ✦'}
