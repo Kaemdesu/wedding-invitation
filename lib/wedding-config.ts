@@ -8,7 +8,7 @@ export const wedding = {
   groom: {
     name: 'Kelvin Muliawan',
     shortName: 'Kelvin',
-    bio: "The beloved first son of Mrs. Indriyani, the late Mr. Herman Tedja Muliawan, and his step father Mr. Achmad Hidayat.\n\nSoon to be Annisa's husband.",
+    bio: "The beloved first son of Mrs. Indriyani, the late Mr. Herman Tedja Muliawan, and his step father Mr. Achmad Hidayat, Soon to be Annisa's husband.",
     photo: '/images/groom-frame.png',
   },
   date: {
@@ -17,7 +17,7 @@ export const wedding = {
     iso: '2026-08-08',
   },
   city: 'Grand Wisata, Bekasi',
-  rsvpBy: 'July 8th, 2026',
+  rsvpBy: 'July 25th, 2026',
   ceremony: {
     time: '09:00 AM',
     venue: 'Masjid Izzatul Islam',
