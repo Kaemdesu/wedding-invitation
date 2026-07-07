@@ -21,7 +21,7 @@ function EventCard({
       variants={fadeUp}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative overflow-hidden rounded-2xl border border-gold/20 bg-card/40 p-7 backdrop-blur-sm md:p-10"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gold/20 bg-card/40 p-7 backdrop-blur-sm md:p-10"
     >
       <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-gold/0 via-gold/0 to-gold/0 transition-all duration-500 group-hover:from-gold/[0.04] group-hover:to-gold/[0.08]" />
       <p className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80">
@@ -34,7 +34,7 @@ function EventCard({
       <h3 className="mt-5 font-poppins font-semibold text-fluid-2xl leading-tight text-cream md:mt-6">
         {venue}
       </h3>
-      <div className="mt-3 flex items-start gap-3 text-cream/80">
+      <div className="mt-auto flex items-start gap-3 pt-3 text-cream/80">
         <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold/70" aria-hidden />
         <p className="font-poppins font-light text-fluid-base leading-relaxed">{address}</p>
       </div>
@@ -79,12 +79,12 @@ export function EventDetails() {
         initial="hidden"
         whileInView="show"
         viewport={viewportDefaults}
-        className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:gap-8"
+        className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 md:items-stretch md:gap-8"
       >
         <EventCard
           label="The Ceremony"
-          time={wedding.ceremony.time}
-          venue={wedding.ceremony.venue}
+          time="08:00 AM"
+          venue="Izzatul Islam Mosque"
           address={wedding.ceremony.address}
         />
         <EventCard
