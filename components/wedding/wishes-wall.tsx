@@ -287,7 +287,7 @@ export function WishesWall() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
-                  className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:auto-rows-[minmax(180px,1fr)] md:gap-6 lg:grid-cols-3"
+                  className="grid auto-rows-[minmax(160px,1fr)] grid-cols-1 gap-5 sm:grid-cols-2 sm:auto-rows-[minmax(180px,1fr)] md:gap-6 lg:grid-cols-3"
                 >
                   {currentPageWishes.map((wish) => (
                     <WishCard key={wish.id} wish={wish} />
@@ -296,7 +296,7 @@ export function WishesWall() {
                     <div
                       key={'ph-' + i}
                       aria-hidden
-                      className="hidden rounded-2xl border border-transparent sm:block sm:min-h-[180px]"
+                      className="min-h-[160px] rounded-2xl border border-transparent sm:min-h-[180px]"
                     />
                   ))}
                 </motion.div>
