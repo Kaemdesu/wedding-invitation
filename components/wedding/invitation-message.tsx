@@ -10,7 +10,7 @@ export function InvitationMessage() {
       className="relative py-24 md:py-32"
       aria-label="Invitation message"
     >
-      <div className="mx-auto max-w-3xl px-6 text-center safe-x">
+      <div className="mx-auto w-full max-w-[100rem] px-6 text-center safe-x">
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           whileInView={{ opacity: 1, scaleX: 1 }}
@@ -31,7 +31,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.3,
             ease: easeLuxury,
           }}
-          className="font-geographica text-fluid-4xl leading-[1.15] text-cream md:text-fluid-5xl"
+          className="whitespace-nowrap font-geographica leading-[1.15] text-cream text-[clamp(1.4rem,4.2vw,4.5rem)]"
         >
           As one chapter is preserved for a lifetime,
         </motion.p>
@@ -44,7 +44,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.9,
             ease: easeLuxury,
           }}
-          className="mt-6 font-geographica text-fluid-4xl leading-[1.15] text-gradient-gold md:mt-8 md:text-fluid-5xl"
+          className="mt-6 whitespace-nowrap font-geographica leading-[1.15] text-gradient-gold text-[clamp(1.3rem,4vw,4.3rem)] md:mt-8"
         >
           we invite you to celebrate its beginning with us.
         </motion.p>
