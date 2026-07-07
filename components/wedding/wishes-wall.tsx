@@ -170,6 +170,8 @@ export function WishesWall() {
     safePage * PER_PAGE,
     safePage * PER_PAGE + PER_PAGE
   )
+  const placeholderCount =
+    sortedWishes.length > PER_PAGE ? Math.max(0, PER_PAGE - currentPageWishes.length) : 0
   useEffect(() => {
     if (totalPages <= 1) return
     const interval = setInterval(() => {
@@ -239,7 +241,7 @@ export function WishesWall() {
         initial="hidden"
         whileInView="show"
         viewport={viewportDefaults}
-        className="mb-12 text-center md:mb-16"
+        className="mb-16 text-center md:mb-20"
       >
         <motion.p
           variants={fadeUp}
@@ -253,16 +255,13 @@ export function WishesWall() {
         >
           Wishes from those we love
         </motion.h2>
+        <motion.p
+          variants={fadeUp}
+          className="mx-auto mt-10 max-w-2xl font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mt-14"
+        >
+          Whether you&apos;ll be there in person or in spirit, leave us a note from the heart. ✨
+        </motion.p>
       </motion.div>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewportDefaults}
-        transition={{ duration: 0.8 }}
-        className="mx-auto mb-10 max-w-2xl text-center font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mb-14"
-      >
-        Whether you&apos;ll be there in person or in spirit, leave us a note from the heart. ✨
-      </motion.p>
       <div className="mx-auto max-w-6xl">
         {loading ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
@@ -283,12 +282,19 @@ export function WishesWall() {
           </motion.p>
         ) : (
           <div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:auto-rows-[minmax(180px,1fr)] md:gap-6 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {currentPageWishes.map((wish) => (
                   <WishCard key={wish.id} wish={wish} />
                 ))}
               </AnimatePresence>
+              {Array.from({ length: placeholderCount }).map((_, i) => (
+                <div
+                  key={'ph-' + safePage + '-' + i}
+                  aria-hidden
+                  className="hidden rounded-2xl border border-transparent sm:block sm:min-h-[180px]"
+                />
+              ))}
             </div>
             {totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center gap-4">
