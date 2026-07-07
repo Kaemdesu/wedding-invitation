@@ -1,17 +1,14 @@
 'use client'
-
 import { ArrowLeft } from 'lucide-react'
 import { GiftRegistry } from '@/components/wedding/gift-registry'
 import { ElegantBackground } from '@/components/wedding/elegant-background'
 import { MusicPlayer } from '@/components/wedding/music-player'
-
 export default function GiftsPage() {
   const goHome = () => {
     if (typeof window !== 'undefined') {
       window.location.href = '/'
     }
   }
-
   return (
     <>
       <ElegantBackground />
@@ -21,7 +18,7 @@ export default function GiftsPage() {
             <button
               type="button"
               onClick={goHome}
-              className="inline-flex items-center gap-2 rounded-lg border border-gold/25 bg-card/40 px-4 py-2.5 font-mono text-fluid-xs uppercase tracking-[0.2em] text-cream/85 backdrop-blur-sm transition hover:border-gold/50 hover:text-cream"
+              className="inline-flex items-center gap-2 rounded-lg border border-gold/25 bg-card/40 px-4 py-2.5 font-poppins font-medium text-fluid-xs uppercase tracking-[0.2em] text-cream/85 backdrop-blur-sm transition hover:border-gold/50 hover:text-cream"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Invitation
