@@ -39,7 +39,7 @@ export function DressCode() {
           variants={fadeUp}
           className="mx-auto mt-8 max-w-xl font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mt-10"
         >
-          We would be delighted if you joined us in these tones.
+          We recommend dressing within this palette.
         </motion.p>
 
         <motion.div
