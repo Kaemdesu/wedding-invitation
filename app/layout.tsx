@@ -59,11 +59,38 @@ const poppins = localFont({
   ],
 })
 
+const siteUrl = 'https://annisafajri.kelvinmuliawan.site'
+const siteTitle = 'Kelvin & Annisa — A Love Forged in Time'
+const siteDescription =
+  'Kelvin & Annisa are getting married — 8 August 2026, Masjid Izzatul Islam, Grand Wisata Bekasi. Join us in celebrating our special day.'
+
 export const metadata: Metadata = {
-  title: 'Kelvin & Annisa — A Love Forged in Time',
-  description:
-    'Kelvin Muliawan & Annisa Fajri Luthfiani are getting married — 8 August 2026, Masjid Izzatul Islam, Grand Wisata Bekasi. Join us in celebrating two souls, one beautiful journey.',
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
   generator: 'v0.app',
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    siteName: 'Kelvin & Annisa',
+    type: 'website',
+    locale: 'id_ID',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Kelvin & Annisa Wedding Invitation',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteTitle,
+    description: siteDescription,
+    images: ['/og-image.jpg'],
+  },
 }
 
 export const viewport: Viewport = {
