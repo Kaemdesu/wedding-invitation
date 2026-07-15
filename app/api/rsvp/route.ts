@@ -17,6 +17,7 @@ type RsvpPayload = {
   fullName?: string
   email?: string
   attendance?: 'accept' | 'decline'
+  guestCount?: number | null
 }
 
 export async function POST(req: NextRequest) {
@@ -37,6 +38,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Please select attendance' }, { status: 400 })
     }
 
+    // Guest count only applies when accepting; capped at 5 (including themselves)
+    let guestCount: number | null = null
+    if (attendance === 'accept') {
+      guestCount = Math.floor(Number(body.guestCount))
+      if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 5) {
+        return NextResponse.json(
+          { error: 'Please select a valid number of guests (1–5)' },
+          { status: 400 }
+        )
+      }
+    }
+
     const ipAddress =
       req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
       req.headers.get('x-real-ip') ||
@@ -50,6 +63,7 @@ export async function POST(req: NextRequest) {
         full_name: fullName,
         email,
         attendance,
+        guest_count: guestCount,
         ip_address: ipAddress,
         user_agent: userAgent,
       })

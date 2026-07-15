@@ -20,6 +20,7 @@ export type Rsvp = {
   full_name: string
   email: string
   attendance: 'accept' | 'decline'
+  guest_count: number | null
   created_at: string
   ip_address: string | null
   user_agent: string | null

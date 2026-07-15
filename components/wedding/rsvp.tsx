@@ -15,6 +15,7 @@ const labelClass =
 
 export function Rsvp() {
   const [attendance, setAttendance] = useState<Attendance>('accept')
+  const [guests, setGuests] = useState(1)
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -28,6 +29,7 @@ export function Rsvp() {
       fullName: ((data.get('fullName') as string) || '').trim(),
       email: ((data.get('email') as string) || '').trim(),
       attendance,
+      guestCount: attendance === 'accept' ? guests : null,
     }
     try {
       const res = await fetch('/api/rsvp', {
@@ -44,6 +46,7 @@ export function Rsvp() {
       setStatus('success')
       form.reset()
       setAttendance('accept')
+      setGuests(1)
     } catch {
       setErrorMsg('Network error. Please check your connection and try again.')
       setStatus('error')
@@ -181,6 +184,41 @@ export function Rsvp() {
                   </button>
                 </div>
               </motion.div>
+              <AnimatePresence initial={false}>
+                {attendance === 'accept' && (
+                  <motion.div
+                    key="guests"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <span className={labelClass}>Number of Guests</span>
+                    <p className="-mt-1 mb-3 font-poppins font-light text-fluid-xs text-cream/50">
+                      Including yourself (maximum of 5)
+                    </p>
+                    <div className="grid grid-cols-5 gap-2 sm:gap-3">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => setGuests(n)}
+                          disabled={status === 'loading'}
+                          className={
+                            'touch-target flex items-center justify-center rounded-lg border px-2 py-3 font-poppins font-medium text-fluid-base transition ' +
+                            (guests === n
+                              ? 'border-gold bg-gold/15 text-cream glow-gold'
+                              : 'border-gold/25 text-muted-foreground hover:border-gold/50')
+                          }
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               {status === 'error' && (
                 <motion.p
                   initial={{ opacity: 0, y: -4 }}

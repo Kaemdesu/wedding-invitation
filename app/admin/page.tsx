@@ -365,6 +365,9 @@ export default function AdminPage() {
     rsvpTotal: rsvps.length,
     rsvpAccept: rsvps.filter((r) => r.attendance === 'accept').length,
     rsvpDecline: rsvps.filter((r) => r.attendance === 'decline').length,
+    totalGuests: rsvps
+      .filter((r) => r.attendance === 'accept')
+      .reduce((sum, r) => sum + (r.guest_count || 1), 0),
     wishTotal: wishes.length,
     wishVisible: wishes.filter((w) => !w.is_hidden).length,
     wishPinned: wishes.filter((w) => w.is_pinned).length,
@@ -523,6 +526,7 @@ export default function AdminPage() {
                 { label: 'Total', value: stats.rsvpTotal, color: 'text-cream' },
                 { label: 'Accepting', value: stats.rsvpAccept, color: 'text-emerald-300' },
                 { label: 'Declining', value: stats.rsvpDecline, color: 'text-amber-300' },
+                { label: 'Total Guests', value: stats.totalGuests, color: 'text-gold' },
               ].map(({ label, value, color }) => (
                 <div key={label} className="rounded-xl border border-gold/15 bg-card/30 p-4 backdrop-blur-sm">
                   <p className="font-mono text-xs uppercase tracking-wider text-cream/60">{label}</p>
@@ -667,6 +671,11 @@ export default function AdminPage() {
                         )}
                       </div>
                       <p className="mt-1 font-mono text-sm text-cream/70">{rsvp.email}</p>
+                      {rsvp.attendance === 'accept' && (
+                        <p className="mt-1 font-mono text-xs text-gold/80">
+                          {(rsvp.guest_count || 1) + ' ' + ((rsvp.guest_count || 1) === 1 ? 'guest' : 'guests')}
+                        </p>
+                      )}
                       <p className="mt-1 font-mono text-xs text-cream/40">{timeAgoFull(rsvp.created_at)}</p>
                     </div>
                     <button
