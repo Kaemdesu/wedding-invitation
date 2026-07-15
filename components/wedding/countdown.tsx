@@ -169,7 +169,7 @@ export function Countdown() {
         >
           Saturday, 8 August 2026
           <span className="mx-3 text-gold/60">·</span>
-          09:00 WIB
+          08:00 WIB
         </motion.p>
         <motion.p
           variants={fadeUp}

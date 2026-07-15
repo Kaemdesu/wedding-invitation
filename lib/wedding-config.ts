@@ -19,7 +19,7 @@ export const wedding = {
   city: 'Grand Wisata, Bekasi',
   rsvpBy: 'July 25th, 2026',
   ceremony: {
-    time: '09:00 AM',
+    time: '08:00 AM',
     venue: 'Masjid Izzatul Islam',
     address: 'Grand Wisata, Bekasi, West Java',
     note: 'The akad nikah ceremony will begin promptly. Kindly arrive fifteen minutes early to be seated.',

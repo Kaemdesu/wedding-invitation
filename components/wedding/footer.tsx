@@ -40,40 +40,20 @@ export function Footer() {
             <span className="text-fluid-base text-gold/75">✦</span>
             <span className="block h-px w-12 bg-gradient-to-r from-gold/60 to-transparent md:w-20" />
           </motion.div>
+          <motion.p
+            variants={fadeUp}
+            className="mb-6 font-poppins font-light italic text-fluid-sm tracking-[0.15em] text-cream/85 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)] md:mb-8 md:text-fluid-base"
+          >
+            With love and gratitude
+          </motion.p>
           <motion.h2
             variants={fadeUp}
             className="py-4 font-geographica leading-[1.1] text-gradient-gold [text-shadow:0_2px_40px_oklch(0.12_0.012_270/0.95),0_0_80px_oklch(0.12_0.012_270/0.7)] text-[clamp(3rem,7vw,7rem)]"
           >
             {wedding.groom.shortName}
-            <span className="mx-3 text-gold/70 md:mx-4">&amp;</span>
+            <span className="mx-3 text-gold/70 md:mx-4">&</span>
             {wedding.bride.shortName}
           </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            className="mt-8 font-poppins font-medium text-fluid-sm uppercase tracking-[0.35em] text-cream/95 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)] md:mt-10 md:tracking-[0.45em]"
-          >
-            {wedding.date.short}
-          </motion.p>
-          <motion.p
-            variants={fadeUp}
-            className="mt-3 font-poppins font-light text-fluid-base text-cream/90 [text-shadow:0_2px_20px_oklch(0.12_0.012_270/0.95)]"
-          >
-            {wedding.city}
-          </motion.p>
-          <motion.div
-            variants={fadeUp}
-            className="mt-10 flex items-center justify-center gap-3 md:mt-14"
-          >
-            <span className="block h-px w-10 bg-gradient-to-l from-gold/40 to-transparent md:w-16" />
-            <span className="text-fluid-xs text-gold/60">✦</span>
-            <span className="block h-px w-10 bg-gradient-to-r from-gold/40 to-transparent md:w-16" />
-          </motion.div>
-          <motion.p
-            variants={fadeUp}
-            className="mt-8 font-poppins font-medium text-fluid-xs uppercase tracking-[0.3em] text-cream/80 [text-shadow:0_2px_15px_oklch(0.12_0.012_270/0.95)] md:mt-10"
-          >
-            Made with love · 2026
-          </motion.p>
         </motion.div>
       </div>
     </footer>
