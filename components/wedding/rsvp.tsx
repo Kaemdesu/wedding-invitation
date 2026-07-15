@@ -198,8 +198,8 @@ export function Rsvp() {
                     <p className="-mt-1 mb-3 font-poppins font-light text-fluid-xs text-cream/50">
                       Including yourself
                     </p>
-                    <div className="grid grid-cols-5 gap-2 sm:gap-3">
-                      {[1, 2, 3, 4, 5].map((n) => (
+                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      {[1, 2].map((n) => (
                         <button
                           key={n}
                           type="button"

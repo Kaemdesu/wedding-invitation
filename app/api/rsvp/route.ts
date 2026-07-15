@@ -42,9 +42,9 @@ export async function POST(req: NextRequest) {
     let guestCount: number | null = null
     if (attendance === 'accept') {
       guestCount = Math.floor(Number(body.guestCount))
-      if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 5) {
+      if (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 2) {
         return NextResponse.json(
-          { error: 'Please select a valid number of guests (1–5)' },
+          { error: 'Please select a valid number of guests (1–2)' },
           { status: 400 }
         )
       }
