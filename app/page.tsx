@@ -12,6 +12,7 @@ import { ElegantBackground } from '@/components/wedding/elegant-background'
 import { MusicPlayer } from '@/components/wedding/music-player'
 import { BismillahTransition } from '@/components/wedding/bismillah-transition'
 import { InvitationMessage } from '@/components/wedding/invitation-message'
+import { DressCode } from '@/components/wedding/dress-code'
 
 export default function Page() {
   return (
@@ -36,8 +37,11 @@ export default function Page() {
             <Gallery />
           </LazySection>
           <LazySection>
-            <Rsvp />
-          </LazySection>
+              <Rsvp />
+            </LazySection>
+            <LazySection>
+              <DressCode />
+            </LazySection>
           <LazySection>
             <WishesWall />
           </LazySection>

@@ -1,4 +1,5 @@
 'use client'
+
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, viewportDefaults } from '@/lib/motion'
 
@@ -20,7 +21,6 @@ export function DressCode() {
         viewport={viewportDefaults}
         className="mx-auto max-w-3xl text-center"
       >
-        {/* subtitle — Poppins */}
         <motion.p
           variants={fadeUp}
           className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.35em] text-gold/80"
@@ -28,7 +28,6 @@ export function DressCode() {
           Dress Code
         </motion.p>
 
-        {/* title — Geographica */}
         <motion.h2
           variants={fadeUp}
           className="mt-4 py-2 font-geographica leading-[1.3] text-gradient-gold text-[clamp(2.5rem,5vw,5rem)] md:mt-6"
@@ -36,7 +35,6 @@ export function DressCode() {
           Colour Palette
         </motion.h2>
 
-        {/* body line — Poppins */}
         <motion.p
           variants={fadeUp}
           className="mx-auto mt-8 max-w-xl font-poppins font-light text-fluid-base leading-relaxed text-cream/80 md:mt-10"
@@ -54,11 +52,9 @@ export function DressCode() {
                 className="h-16 w-16 rounded-full border border-gold/25 shadow-lg ring-1 ring-inset ring-white/10 transition hover:scale-105 sm:h-20 sm:w-20"
                 style={{ backgroundColor: c.hex }}
               />
-              {/* colour name — Poppins */}
               <span className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.15em] text-cream/70">
                 {c.name}
               </span>
-              {/* hex code — Poppins */}
               <span className="-mt-1.5 font-poppins font-light text-[10px] uppercase tracking-wider text-cream/40">
                 {c.hex}
               </span>
