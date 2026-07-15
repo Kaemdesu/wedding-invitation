@@ -10,23 +10,29 @@ const fallbackImages = [
   '/images/gallery-4.webp',
   '/images/gallery-5.webp',
   '/images/gallery-6.webp',
+  '/images/gallery-7.webp',
+  '/images/gallery-8.webp',
 ]
 
+// Slots 1 & 5 (index 0 & 4) are TALL → best for PORTRAIT photos.
+// The rest are landscape-friendly.
 const spans = [
-  'col-span-2 row-span-2 md:col-span-4 md:row-span-2',
-  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
-  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
-  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
-  'col-span-1 row-span-1 md:col-span-2 md:row-span-1',
-  'col-span-2 row-span-1 md:col-span-2 md:row-span-1',
+  'col-span-1 row-span-2 md:col-span-2 md:row-span-2', // 1 — PORTRAIT (tall)
+  'col-span-1 row-span-1 md:col-span-4 md:row-span-1', // 2 — landscape (wide)
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1', // 3 — landscape
+  'col-span-2 row-span-1 md:col-span-2 md:row-span-1', // 4 — landscape
+  'col-span-1 row-span-2 md:col-span-2 md:row-span-2', // 5 — PORTRAIT (tall)
+  'col-span-1 row-span-1 md:col-span-4 md:row-span-1', // 6 — landscape (wide)
+  'col-span-1 row-span-1 md:col-span-2 md:row-span-1', // 7 — landscape
+  'col-span-2 row-span-1 md:col-span-2 md:row-span-1', // 8 — landscape
 ]
 
 export function Gallery() {
   const galleryImages = [...wedding.gallery]
-  while (galleryImages.length < 6) {
+  while (galleryImages.length < 8) {
     galleryImages.push(fallbackImages[galleryImages.length])
   }
-  const images = galleryImages.slice(0, 6)
+  const images = galleryImages.slice(0, 8)
   return (
     <section className="relative px-6 py-24 safe-x md:py-32">
       <motion.div
