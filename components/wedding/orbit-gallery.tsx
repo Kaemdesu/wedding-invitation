@@ -41,7 +41,7 @@ function GoldDust({ count = 900, spread = 18 }: { count?: number; spread?: numbe
   useFrame((state) => {
     if (!ref.current) return
     const t = state.clock.elapsedTime
-    ref.current.rotation.y = t * 0.02
+    ref.current.rotation.y = t * 0.025
     ref.current.position.y = Math.sin(t * 0.1) * 0.2
   })
 
@@ -109,6 +109,7 @@ function OrbitRing({
   autoRotateSpeed,
   cardBase,
   reduceMotion,
+  scrollBoost,
 }: {
   images: string[]
   radiusX: number
@@ -116,6 +117,7 @@ function OrbitRing({
   autoRotateSpeed: number
   cardBase: number
   reduceMotion: boolean
+  scrollBoost: React.MutableRefObject<number>
 }) {
   const group = useRef<THREE.Group>(null)
 
@@ -128,10 +130,17 @@ function OrbitRing({
     })
   }, [images, radiusX, radiusZ])
 
-  useFrame((_, delta) => {
-    if (group.current && !reduceMotion) {
-      group.current.rotation.y += delta * autoRotateSpeed
-    }
+  useFrame((state, delta) => {
+    if (!group.current || reduceMotion) return
+    const t = state.clock.elapsedTime
+    // base spin + scroll-driven boost (decays back to base) → feels reactive
+    const boost = scrollBoost.current
+    group.current.rotation.y += delta * (autoRotateSpeed + boost)
+    // gentle life: breathing tilt + slow bob
+    group.current.rotation.x = Math.sin(t * 0.25) * 0.08
+    group.current.position.y = Math.sin(t * 0.4) * 0.15
+    // decay the boost toward 0
+    scrollBoost.current = THREE.MathUtils.damp(scrollBoost.current, 0, 2.5, delta)
   })
 
   return (
@@ -175,13 +184,14 @@ export function OrbitGallery({
   images,
   radiusX,
   radiusZ,
-  autoRotateSpeed = 0.22,
+  autoRotateSpeed = 0.28,
 }: OrbitGalleryProps) {
   const [mounted, setMounted] = useState(false)
   const [webgl, setWebgl] = useState<boolean | null>(null)
   const [contextLost, setContextLost] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
+  const scrollBoost = useRef(0)
 
   useEffect(() => {
     setMounted(true)
@@ -192,6 +202,20 @@ export function OrbitGallery({
     const on = () => setReduceMotion(mq.matches)
     mq.addEventListener('change', on)
     return () => mq.removeEventListener('change', on)
+  }, [])
+
+  // Scroll-reactive spin (mobile especially): each scroll nudges the orbit faster.
+  useEffect(() => {
+    let last = typeof window !== 'undefined' ? window.scrollY : 0
+    const onScroll = () => {
+      const now = window.scrollY
+      const dv = Math.abs(now - last)
+      last = now
+      // clamp so a fast fling doesn't spin like crazy
+      scrollBoost.current = Math.min(scrollBoost.current + dv * 0.012, 3)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   if (mounted && webgl === false) return <StaticGrid images={images} />
@@ -217,8 +241,13 @@ export function OrbitGallery({
         failIfMajorPerformanceCaveat: false,
         preserveDrawingBuffer: false,
       }}
-      // 🔑 mobile: let vertical swipes scroll the PAGE, not rotate the canvas
-      style={{ background: 'transparent', touchAction: isMobile ? 'pan-y' : 'none' }}
+      // 🔑 mobile: canvas ignores touch entirely → page scrolls freely, never traps.
+      //    interactivity comes from the scroll-reactive spin instead of drag.
+      style={{
+        background: 'transparent',
+        pointerEvents: isMobile ? 'none' : 'auto',
+        touchAction: isMobile ? 'pan-y' : 'none',
+      }}
       performance={{ min: 0.5 }}
       onCreated={({ gl }) => {
         const canvas = gl.domElement
@@ -241,6 +270,7 @@ export function OrbitGallery({
           autoRotateSpeed={autoRotateSpeed}
           cardBase={cardBase}
           reduceMotion={reduceMotion}
+          scrollBoost={scrollBoost}
         />
         <GoldDust count={isMobile ? 450 : 900} />
         <Sparkles
@@ -252,17 +282,18 @@ export function OrbitGallery({
           opacity={0.85}
         />
       </Suspense>
-      {/* Desktop: drag to rotate. Mobile: no touch-rotate so the page can scroll. */}
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        enableRotate={!isMobile}
-        rotateSpeed={0.45}
-        enableDamping
-        dampingFactor={0.08}
-        minPolarAngle={Math.PI / 3.2}
-        maxPolarAngle={Math.PI / 1.7}
-      />
+      {/* Desktop only: drag to rotate. Mobile has no controls (scroll-reactive instead). */}
+      {!isMobile && (
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          rotateSpeed={0.45}
+          enableDamping
+          dampingFactor={0.08}
+          minPolarAngle={Math.PI / 3.2}
+          maxPolarAngle={Math.PI / 1.7}
+        />
+      )}
     </Canvas>
   )
 }
