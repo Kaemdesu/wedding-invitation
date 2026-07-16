@@ -60,7 +60,7 @@ const poppins = localFont({
 })
 
 const siteUrl = 'https://annisafajri.kelvinmuliawan.site'
-const siteTitle = 'Kelvin & Annisa — A Love Forged in Time'
+const siteTitle = 'Kelvin & Annisa — Preserved Chapter'
 const siteDescription =
   'Kelvin & Annisa are getting married — 8 August 2026, Masjid Izzatul Islam, Grand Wisata Bekasi. Join us in celebrating our special day.'
 
