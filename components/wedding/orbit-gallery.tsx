@@ -211,8 +211,8 @@ export function OrbitGallery({
       const now = window.scrollY
       const dv = Math.abs(now - last)
       last = now
-      // clamp so a fast fling doesn't spin like crazy
-      scrollBoost.current = Math.min(scrollBoost.current + dv * 0.012, 3)
+      // clamp so a fast fling doesn't spin like crazy (gentler than before)
+      scrollBoost.current = Math.min(scrollBoost.current + dv * 0.004, 1.1)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -223,10 +223,10 @@ export function OrbitGallery({
   if (!mounted) return null
 
   // wider elliptical orbit; tuned per device so nothing clips
-  const rx = radiusX ?? (isMobile ? 4.6 : 6.2)
-  const rz = radiusZ ?? (isMobile ? 2.2 : 3.2)
-  const cardBase = isMobile ? 1.5 : 2.0
-  const camZ = isMobile ? 12.5 : 10
+  const rx = radiusX ?? (isMobile ? 5.2 : 7.0)
+  const rz = radiusZ ?? (isMobile ? 2.4 : 3.4)
+  const cardBase = isMobile ? 2.4 : 3.0
+  const camZ = isMobile ? 13 : 11
 
   return (
     <Canvas
