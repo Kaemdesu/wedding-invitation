@@ -12,9 +12,7 @@ const SPARKLE = '#f5d68a'
 
 type OrbitGalleryProps = {
   images: string[]
-  /** horizontal orbit radius (wider = more spread) */
   radiusX?: number
-  /** depth orbit radius */
   radiusZ?: number
   autoRotateSpeed?: number
 }
@@ -145,7 +143,6 @@ function OrbitRing({
   )
 }
 
-/* Static fallback grid if WebGL is unavailable */
 function StaticGrid({ images }: { images: string[] }) {
   return (
     <div className="grid h-full w-full grid-cols-2 gap-3 sm:grid-cols-4">
@@ -202,14 +199,14 @@ export function OrbitGallery({
   if (!mounted) return null
 
   // wider elliptical orbit; tuned per device so nothing clips
-  const rx = radiusX ?? (isMobile ? 3.6 : 6.2)
-  const rz = radiusZ ?? (isMobile ? 2.4 : 3.2)
-  const cardBase = isMobile ? 1.7 : 2.0
-  const camZ = isMobile ? 11 : 10
+  const rx = radiusX ?? (isMobile ? 4.6 : 6.2)
+  const rz = radiusZ ?? (isMobile ? 2.2 : 3.2)
+  const cardBase = isMobile ? 1.5 : 2.0
+  const camZ = isMobile ? 12.5 : 10
 
   return (
     <Canvas
-      camera={{ position: [0, 0.6, camZ], fov: 50 }}
+      camera={{ position: [0, 0.4, camZ], fov: 50 }}
       dpr={isMobile ? [1, 1.5] : [1, 2]}
       frameloop="always"
       gl={{
@@ -220,7 +217,8 @@ export function OrbitGallery({
         failIfMajorPerformanceCaveat: false,
         preserveDrawingBuffer: false,
       }}
-      style={{ background: 'transparent' }}
+      // 🔑 mobile: let vertical swipes scroll the PAGE, not rotate the canvas
+      style={{ background: 'transparent', touchAction: isMobile ? 'pan-y' : 'none' }}
       performance={{ min: 0.5 }}
       onCreated={({ gl }) => {
         const canvas = gl.domElement
@@ -254,9 +252,11 @@ export function OrbitGallery({
           opacity={0.85}
         />
       </Suspense>
+      {/* Desktop: drag to rotate. Mobile: no touch-rotate so the page can scroll. */}
       <OrbitControls
         enableZoom={false}
         enablePan={false}
+        enableRotate={!isMobile}
         rotateSpeed={0.45}
         enableDamping
         dampingFactor={0.08}
