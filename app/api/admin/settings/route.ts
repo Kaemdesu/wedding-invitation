@@ -1,3 +1,4 @@
+// app/api/admin/settings/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
@@ -34,8 +35,9 @@ type PatchPayload = {
   delivery_phone?: string
   delivery_address?: string
   delivery_notes?: string
-  bca_account_number?: string
-  bca_account_name?: string
+  bank_name?: string
+  bank_account_number?: string
+  bank_account_holder?: string
 }
 
 export async function PATCH(req: NextRequest) {
@@ -45,7 +47,6 @@ export async function PATCH(req: NextRequest) {
   try {
     const body = (await req.json()) as PatchPayload
     const updates: Record<string, unknown> = { updated_at: new Date().toISOString() }
-
     if (body.delivery_recipient !== undefined)
       updates.delivery_recipient = String(body.delivery_recipient).trim()
     if (body.delivery_phone !== undefined)
@@ -54,11 +55,12 @@ export async function PATCH(req: NextRequest) {
       updates.delivery_address = String(body.delivery_address).trim()
     if (body.delivery_notes !== undefined)
       updates.delivery_notes = String(body.delivery_notes).trim()
-    if (body.bca_account_number !== undefined)
-      updates.bca_account_number = String(body.bca_account_number).trim()
-    if (body.bca_account_name !== undefined)
-      updates.bca_account_name = String(body.bca_account_name).trim()
-
+    if (body.bank_name !== undefined)
+      updates.bank_name = String(body.bank_name).trim()
+    if (body.bank_account_number !== undefined)
+      updates.bank_account_number = String(body.bank_account_number).trim()
+    if (body.bank_account_holder !== undefined)
+      updates.bank_account_holder = String(body.bank_account_holder).trim()
     const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('site_settings')
@@ -66,7 +68,6 @@ export async function PATCH(req: NextRequest) {
       .eq('id', 1)
       .select('*')
       .single()
-
     if (error) throw error
     return NextResponse.json({ ok: true, settings: data })
   } catch (err) {

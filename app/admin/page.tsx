@@ -1,5 +1,5 @@
+// app/admin/page.tsx
 'use client'
-
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -12,7 +12,6 @@ import {
 import type { Gift, GiftStatus, ShopName, Wish, Rsvp, SiteSettings } from '@/lib/supabase'
 
 const PIN_STORAGE_KEY = 'wedding-admin-pin'
-
 type Tab = 'overview' | 'rsvps' | 'wishes' | 'gifts' | 'settings'
 
 function formatPrice(idr: number) {
@@ -60,23 +59,19 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState('')
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState<Tab>('overview')
-
   const [rsvps, setRsvps] = useState<Rsvp[]>([])
   const [wishes, setWishes] = useState<Wish[]>([])
   const [gifts, setGifts] = useState<Gift[]>([])
   const [settings, setSettings] = useState<SiteSettings | null>(null)
-
   const [rsvpSearch, setRsvpSearch] = useState('')
   const [wishSearch, setWishSearch] = useState('')
   const [giftSearch, setGiftSearch] = useState('')
   const [rsvpFilter, setRsvpFilter] = useState<'all' | 'accept' | 'decline'>('all')
-
   const [modalMode, setModalMode] = useState<'closed' | 'create' | 'edit'>('closed')
   const [editingGiftId, setEditingGiftId] = useState<string | null>(null)
   const [draft, setDraft] = useState<GiftDraft>(emptyGiftDraft)
   const [modalError, setModalError] = useState('')
   const [saving, setSaving] = useState(false)
-
   const [settingsDraft, setSettingsDraft] = useState<SiteSettings | null>(null)
   const [settingsSaving, setSettingsSaving] = useState(false)
   const [settingsSaved, setSettingsSaved] = useState(false)
@@ -98,41 +93,35 @@ export default function AdminPage() {
         setLoading(false)
         return
       }
-
       const [rsvpRes, wishRes, giftRes, settingsRes] = await Promise.allSettled([
         fetch('/api/admin/rsvps', { headers: { 'x-admin-pin': pinToUse } }),
         fetch('/api/admin/wishes', { headers: { 'x-admin-pin': pinToUse } }),
         Promise.resolve(authCheck),
         fetch('/api/admin/settings', { headers: { 'x-admin-pin': pinToUse } }),
       ])
-
       if (rsvpRes.status === 'fulfilled' && rsvpRes.value.ok) {
         const data = await rsvpRes.value.json()
         setRsvps(data.rsvps || [])
       } else {
         setRsvps([])
       }
-
       if (wishRes.status === 'fulfilled' && wishRes.value.ok) {
         const data = await wishRes.value.json()
         setWishes(data.wishes || [])
       } else {
         setWishes([])
       }
-
       if (giftRes.status === 'fulfilled' && giftRes.value.ok) {
         const data = await giftRes.value.json()
         setGifts(data.gifts || [])
       } else {
         setGifts([])
       }
-
       if (settingsRes.status === 'fulfilled' && settingsRes.value.ok) {
         const data = await settingsRes.value.json()
         setSettings(data.settings || null)
         setSettingsDraft(data.settings || null)
       }
-
       setAuthed(true)
       sessionStorage.setItem(PIN_STORAGE_KEY, pinToUse)
     } catch (err) {
@@ -345,8 +334,9 @@ export default function AdminPage() {
           delivery_phone: settingsDraft.delivery_phone,
           delivery_address: settingsDraft.delivery_address,
           delivery_notes: settingsDraft.delivery_notes,
-          bca_account_number: settingsDraft.bca_account_number,
-          bca_account_name: settingsDraft.bca_account_name,
+          bank_name: settingsDraft.bank_name,
+          bank_account_number: settingsDraft.bank_account_number,
+          bank_account_holder: settingsDraft.bank_account_holder,
         }),
       })
       if (!res.ok) throw new Error('Save failed')
@@ -487,7 +477,6 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
-
       <div className="mx-auto mb-6 max-w-7xl">
         <div className="flex flex-wrap gap-2 border-b border-gold/15 pb-2">
           {tabs.map((t) => {
@@ -516,7 +505,6 @@ export default function AdminPage() {
           })}
         </div>
       </div>
-
       {tab === 'overview' && (
         <div className="mx-auto max-w-7xl space-y-6">
           <div>
@@ -535,7 +523,6 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
-
           <div>
             <h2 className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-gold/80">Wishes</h2>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -552,7 +539,6 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
-
           <div>
             <h2 className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-gold/80">Gifts</h2>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
@@ -570,7 +556,6 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
-
           <div className="rounded-2xl border border-gold/20 bg-card/30 p-6 backdrop-blur-sm">
             <div className="mb-4 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-gold" />
@@ -616,7 +601,6 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-
       {tab === 'rsvps' && (
         <div className="mx-auto max-w-7xl">
           <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -645,7 +629,6 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
-
           <div className="space-y-2">
             {filteredRsvps.length === 0 ? (
               <p className="py-12 text-center font-sans text-cream/60">
@@ -692,7 +675,6 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-
       {tab === 'wishes' && (
         <div className="mx-auto max-w-7xl">
           <div className="mb-4">
@@ -707,7 +689,6 @@ export default function AdminPage() {
               />
             </div>
           </div>
-
           <div className="space-y-2">
             {filteredWishes.length === 0 ? (
               <p className="py-12 text-center font-sans text-cream/60">
@@ -778,7 +759,6 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-
       {tab === 'gifts' && (
         <div className="mx-auto max-w-7xl">
           <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -800,7 +780,6 @@ export default function AdminPage() {
               Add Gift
             </button>
           </div>
-
           <div className="space-y-3">
             {filteredGifts.length === 0 ? (
               <p className="py-12 text-center font-sans text-cream/60">
@@ -926,7 +905,6 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-
       {tab === 'settings' && (
         <div className="mx-auto max-w-3xl">
           {!settingsDraft ? (
@@ -943,7 +921,6 @@ export default function AdminPage() {
                 <p className="mb-5 font-sans text-sm text-cream/70">
                   Where guests should ship gifts after purchasing.
                 </p>
-
                 <div className="space-y-4">
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
@@ -957,7 +934,6 @@ export default function AdminPage() {
                       className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
                       Phone Number
@@ -970,7 +946,6 @@ export default function AdminPage() {
                       className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
                       Full Address
@@ -983,7 +958,6 @@ export default function AdminPage() {
                       className="w-full resize-none rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
                       Additional Notes (optional)
@@ -998,7 +972,6 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
-
               <div className="rounded-2xl border border-gold/20 bg-card/30 p-6 backdrop-blur-sm md:p-8">
                 <div className="mb-5 flex items-center gap-3">
                   <GiftIcon className="h-5 w-5 text-gold" />
@@ -1009,36 +982,45 @@ export default function AdminPage() {
                 <p className="mb-5 font-sans text-sm text-cream/70">
                   Displayed on the gift registry for guests who prefer monetary gifts.
                 </p>
-
                 <div className="space-y-4">
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
-                      BCA Account Number
+                      Bank Name
                     </label>
                     <input
                       type="text"
-                      value={settingsDraft.bca_account_number}
-                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bca_account_number: e.target.value })}
+                      value={settingsDraft.bank_name}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bank_name: e.target.value })}
+                      placeholder="Bank Central Asia"
+                      className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
+                      Account Number
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsDraft.bank_account_number}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bank_account_number: e.target.value })}
                       placeholder="5215143209"
                       className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-mono text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
                     />
                   </div>
-
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-wider text-gold">
                       Account Holder Name
                     </label>
                     <input
                       type="text"
-                      value={settingsDraft.bca_account_name}
-                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bca_account_name: e.target.value })}
+                      value={settingsDraft.bank_account_holder}
+                      onChange={(e) => setSettingsDraft({ ...settingsDraft, bank_account_holder: e.target.value })}
                       placeholder="Kelvin Muliawan"
                       className="w-full rounded-lg border border-gold/25 bg-background/60 px-4 py-2.5 font-sans text-cream outline-none focus:border-gold focus:ring-1 focus:ring-gold/50"
                     />
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={saveSettings}
@@ -1075,7 +1057,6 @@ export default function AdminPage() {
           )}
         </div>
       )}
-
       <AnimatePresence>
         {modalMode !== 'closed' && (
           <motion.div

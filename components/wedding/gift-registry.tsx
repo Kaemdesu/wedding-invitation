@@ -90,7 +90,7 @@ export function GiftRegistry() {
   }, [modalGift, guestName, guestEmail, purchaseMessage, loadAll])
   const copyAccount = useCallback(() => {
     if (!settings) return
-    navigator.clipboard.writeText(settings.bca_account_number)
+    navigator.clipboard.writeText(settings.bank_account_number)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }, [settings])
@@ -309,9 +309,12 @@ export function GiftRegistry() {
             For those who prefer to give a monetary gift, you may transfer to the account below.
           </p>
           <div className="mt-6 rounded-xl border border-gold/20 bg-background/40 p-5">
-            <p className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.25em] text-gold/80">Bank Central Asia</p>
-            <div className="mt-3 flex items-center gap-3">
-              <p className="font-poppins font-semibold text-fluid-xl tracking-wider text-cream">{settings.bca_account_number}</p>
+            
+
+              <p className="font-poppins font-medium text-fluid-xs uppercase tracking-[0.25em] text-gold/80">{settings.bank_name}</p>
+              <div className="mt-3 flex items-center gap-3">
+                <p className="font-poppins font-semibold text-fluid-xl tracking-wider text-cream">{settings.bank_account_number}</p>
+
               <button
                 onClick={copyAccount}
                 className="touch-target inline-flex items-center justify-center rounded-lg border border-gold/30 p-2 text-gold transition hover:border-gold hover:bg-gold/10"
@@ -321,7 +324,10 @@ export function GiftRegistry() {
               </button>
               {copied && <span className="font-poppins font-medium text-fluid-xs uppercase tracking-wider text-gold">Copied!</span>}
             </div>
-            <p className="mt-3 font-poppins font-light text-fluid-sm text-cream/70">a.n. {settings.bca_account_name}</p>
+            
+
+              <p className="mt-3 font-poppins font-light text-fluid-sm text-cream/70">a.n. {settings.bank_account_holder}</p>
+
           </div>
         </motion.div>
       )}
