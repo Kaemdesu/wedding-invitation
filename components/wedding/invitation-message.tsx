@@ -1,3 +1,4 @@
+// components/wedding/invitation-message.tsx
 'use client'
 import { motion, useReducedMotion } from 'framer-motion'
 import { easeLuxury } from '@/lib/motion'
@@ -31,7 +32,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.3,
             ease: easeLuxury,
           }}
-          className="whitespace-nowrap overflow-visible py-2 font-geographica leading-[1.6] text-cream text-[clamp(1.2rem,3.8vw,4rem)]"
+          className="whitespace-nowrap overflow-visible py-2 font-geographica leading-[1.6] text-cream text-[clamp(1.5rem,4.9vw,5.2rem)]"
         >
           As one chapter is preserved for a lifetime,
         </motion.p>
@@ -44,7 +45,7 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.9,
             ease: easeLuxury,
           }}
-          className="mt-2 whitespace-nowrap overflow-visible py-2 font-geographica leading-[1.6] text-gradient-gold text-[clamp(1.15rem,3.6vw,3.8rem)]"
+          className="mt-2 whitespace-nowrap overflow-visible py-2 font-geographica leading-[1.6] text-gradient-gold text-[clamp(1.45rem,4.7vw,5rem)]"
         >
           we invite you to celebrate its beginning with us.
         </motion.p>
@@ -58,7 +59,6 @@ export function InvitationMessage() {
           }}
           className="mt-6 font-poppins font-light text-fluid-sm tracking-[0.25em] text-cream/75 md:mt-8"
         >
-          — {wedding.groom.shortName} &amp; {wedding.bride.shortName}, together with our families
         </motion.p>
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
