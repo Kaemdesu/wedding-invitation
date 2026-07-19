@@ -66,15 +66,16 @@ export type Wish = {
 
 export type PublicWish = Omit<Wish, 'ip_address' | 'user_agent' | 'is_hidden'>
 
+// lib/supabase.ts (only the SiteSettings block changes)
 export type SiteSettings = {
   id: number
   delivery_recipient: string
   delivery_phone: string
   delivery_address: string
   delivery_notes: string
-  bca_account_number: string
-  bca_account_name: string
+  bank_name: string
+  bank_account_number: string
+  bank_account_holder: string
   updated_at: string
 }
-
 export type PublicSiteSettings = Omit<SiteSettings, 'id' | 'updated_at'>

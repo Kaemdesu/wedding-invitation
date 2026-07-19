@@ -32,9 +32,9 @@ export function InvitationMessage() {
             delay: reduceMotion ? 0 : 0.3,
             ease: easeLuxury,
           }}
-          className="whitespace-nowrap overflow-visible py-2 font-geographica leading-[1.6] text-cream text-[clamp(1.5rem,4.9vw,5.2rem)]"
+          className="whitespace-nowrap overflow-visible py-2 font-poppins font-light tracking-[0.1em] leading-[1.6] text-cream text-[clamp(0.95rem,3vw,2.4rem)]"
         >
-          As one chapter is preserved for a lifetime,
+          Together with our families,
         </motion.p>
         <motion.p
           initial={{ opacity: 0, y: 24 }}
